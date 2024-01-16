@@ -14,13 +14,15 @@ public static class MauiProgram
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("MaterialIcons-Regulard.ttf", "MaterialIcons");
+            });
 
 		builder.Services.AddSingleton<SeedListPage>();
-		builder.Services.AddTransient<SeedEditPage>();
+        builder.Services.AddTransient<SeedEditPage>();
+        builder.Services.AddTransient<DevicePage>();
 
-		builder.Services.AddSingleton<SeedDatabase>();
+        builder.Services.AddSingleton<SeedDatabase>();
 
 		return builder.Build();
 	}
