@@ -6,6 +6,9 @@
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
              Title="Seeds">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Clicked="OnItemAdded" />
+    </ContentPage.ToolbarItems>
     <Grid RowDefinitions="*,Auto">
         <CollectionView 
                   VerticalOptions="Fill"
@@ -13,15 +16,13 @@
                   SelectionMode="Single"
                   SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:SeedItem">
-                        <Grid ColumnDefinitions="*, Auto" Padding="20">
-                            <Label Text="{Binding Name}"
+                <DataTemplate x:DataType="models:SeedCollection">
+                    <Grid ColumnDefinitions="*, Auto" Padding="20">
+                        <Label Text="{Binding Name}"
                                    VerticalTextAlignment="Center"/>
-                        </Grid>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Button Grid.Row="1" Text="Add New Item" Clicked="OnItemAdded"
-                Margin="20"/>
     </Grid>
 </ContentPage>

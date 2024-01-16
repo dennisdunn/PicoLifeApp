@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace PicoLife.Models;
 
@@ -10,6 +11,6 @@ public class SeedItem
     public int X { get; set; }
     public int Y { get; set; }
 
-    public string Name { get; set; }
-    public string Notes { get; set; }
+    [ForeignKey(typeof(SeedCollection))]
+    public int CollectionId { get; set; }
 }

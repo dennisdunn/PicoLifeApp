@@ -4,16 +4,16 @@ using PicoLife.Models;
 namespace PicoLife.Views;
 
 [QueryProperty("Item", "Item")]
-public partial class SeedItemPage : ContentPage
+public partial class SeedEditPage : ContentPage
 {
-	SeedItem item;
-	public SeedItem Item
+	SeedCollection item;
+	public SeedCollection Item
 	{
-		get => BindingContext as SeedItem;
+		get => BindingContext as SeedCollection;
 		set => BindingContext = value;
 	}
     SeedDatabase database;
-    public SeedItemPage(SeedDatabase SeedItemDatabase)
+    public SeedEditPage(SeedDatabase SeedItemDatabase)
     {
         InitializeComponent();
         database = SeedItemDatabase;
@@ -27,7 +27,7 @@ public partial class SeedItemPage : ContentPage
             return;
         }
 
-        await database.SaveItemAsync(Item);
+        await database.SaveCollectionAsync(Item);
         await Shell.Current.GoToAsync("..");
     }
 
@@ -35,7 +35,7 @@ public partial class SeedItemPage : ContentPage
     {
         if (Item.ID == 0)
             return;
-        await database.DeleteItemAsync(Item);
+        await database.DeleteCollectionAsync(Item);
         await Shell.Current.GoToAsync("..");
     }
 

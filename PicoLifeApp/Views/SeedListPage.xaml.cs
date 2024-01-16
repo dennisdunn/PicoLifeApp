@@ -7,11 +7,12 @@ namespace PicoLife.Views;
 public partial class SeedListPage : ContentPage
 {
     SeedDatabase database;
-    public ObservableCollection<SeedItem> Items { get; set; } = new();
-    public SeedListPage(SeedDatabase SeedItemDatabase)
+    public ObservableCollection<SeedCollection> Items { get; set; } = new();
+
+    public SeedListPage(SeedDatabase SeedCollectionDatabase)
 	{
         InitializeComponent();
-        database = SeedItemDatabase;
+        database = SeedCollectionDatabase;
         BindingContext = this;
     }
 
@@ -19,7 +20,7 @@ public partial class SeedListPage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        var items = await database.GetItemsAsync();
+        var items = await database.GetCollectionsAsync();
         MainThread.BeginInvokeOnMainThread(() =>
         {
             Items.Clear();
@@ -30,18 +31,18 @@ public partial class SeedListPage : ContentPage
     }
     async void OnItemAdded(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(SeedItemPage), true, new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
         {
-            ["Item"] = new SeedItem()
+            ["Item"] = new SeedCollection()
         });
     }
 
     private async void  CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is not SeedItem item)
+        if (e.CurrentSelection.FirstOrDefault() is not SeedCollection item)
             return;
 
-        await Shell.Current.GoToAsync(nameof(SeedItemPage), true, new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
         {
             ["Item"] = item
         });

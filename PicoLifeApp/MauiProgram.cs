@@ -18,7 +18,7 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddSingleton<SeedListPage>();
-		builder.Services.AddTransient<SeedItemPage>();
+		builder.Services.AddTransient<SeedEditPage>();
 
 		builder.Services.AddSingleton<SeedDatabase>();
 
