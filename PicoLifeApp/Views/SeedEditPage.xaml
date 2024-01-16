@@ -6,8 +6,20 @@
              xmlns:models="clr-namespace:PicoLife.Models"
              x:DataType="models:SeedCollection">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Save" Clicked="OnSaveClicked" />
-        <ToolbarItem Text="Delete" Clicked="OnDeleteClicked" />
+        <ToolbarItem Text="Save" Clicked="OnSaveClicked" >
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialIcons-Regular"
+                                 Glyph="&#xe161;"
+                                 Size="Large" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Delete" Clicked="OnDeleteClicked" >
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialIcons-Regular"
+                                 Glyph="&#xe872;"
+                                 Size="Large" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     <ScrollView>
         <VerticalStackLayout Padding="20"

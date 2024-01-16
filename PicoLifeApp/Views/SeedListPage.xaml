@@ -7,7 +7,13 @@
              ios:Page.UseSafeArea="True"
              Title="Seeds">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Clicked="OnItemAdded" />
+        <ToolbarItem Text="Add" Clicked="OnItemAdded" >
+            <ToolbarItem.IconImageSource>
+            <FontImageSource FontFamily="MaterialIcons-Regular"
+                                 Glyph="&#xe145;"
+                                 Size="Large" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     <Grid RowDefinitions="*,Auto">
         <CollectionView 

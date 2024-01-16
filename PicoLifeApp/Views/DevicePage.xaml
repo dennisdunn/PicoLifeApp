@@ -9,7 +9,7 @@
         <ToolbarItem Text="Scan" Clicked="OnScanClicked" >
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIcons-Regular"
-                                 Glyph="&#xe161;"
+                                 Glyph="&#xe5d5;"
                                  Size="Large" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
