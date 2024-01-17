@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using SQLiteNetExtensions;
 using SQLiteNetExtensions.Attributes;
+using System.Collections.ObjectModel;
 
 namespace PicoLife.Models;
 
@@ -13,5 +14,5 @@ public class SeedCollection
     public string Notes { get; set; }
 
     [OneToMany]
-    public List<SeedItem> Seeds { get; set; }=new List<SeedItem> { new() { X = 1, Y = 2 ,Color="blue"}, new() { X = 2, Y = 2, Color = "blue" } };
+    public ObservableCollection<SeedItem> Seeds { get; set;}=new ObservableCollection<SeedItem>();
 }

@@ -1,17 +1,21 @@
 using PicoLife.Data;
 using PicoLife.Models;
+using System.Collections.ObjectModel;
 
 namespace PicoLife.Views;
 
 [QueryProperty("Item", "Item")]
 public partial class SeedEditPage : ContentPage
 {
-	SeedCollection item;
-	public SeedCollection Item
-	{
-		get => BindingContext as SeedCollection;
-		set => BindingContext = value;
-	}
+    SeedCollection item;
+
+    List<SeedItem> deletedSeeds = [];
+
+    public SeedCollection Item
+    {
+        get => BindingContext as SeedCollection;
+        set => BindingContext = value;
+    }
     SeedDatabase database;
     public SeedEditPage(SeedDatabase SeedItemDatabase)
     {
@@ -28,6 +32,18 @@ public partial class SeedEditPage : ContentPage
         }
 
         await database.SaveCollectionAsync(Item);
+
+        foreach (var seed in Item.Seeds)
+        {
+            seed.CollectionId = Item.ID;
+            await database.SaveItemAsync(seed);
+        }
+
+        foreach (var seed in deletedSeeds)
+        {
+            await database.DeleteItemAsync(seed);
+        }
+
         await Shell.Current.GoToAsync("..");
     }
 
@@ -35,6 +51,10 @@ public partial class SeedEditPage : ContentPage
     {
         if (Item.ID == 0)
             return;
+        foreach (var seed in deletedSeeds)
+        {
+            await database.DeleteItemAsync(seed);
+        }
         await database.DeleteCollectionAsync(Item);
         await Shell.Current.GoToAsync("..");
     }
@@ -44,11 +64,21 @@ public partial class SeedEditPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 
-    async void OnDeleteSeedItemClicked(object sender, EventArgs e)
+    void OnDeleteSeedItemClicked(object sender, EventArgs e)
     {
+        var btn = (ImageButton)sender;
+        var item = (SeedItem)btn.BindingContext;
+
+        Item.Seeds.Remove(item);
+
+        if (item.ID > 0)
+        {
+            deletedSeeds.Add(item);
+        }
     }
 
-    async void OnAddSeedItemClicked(object sender, EventArgs e)
+    void OnAddSeedItemClicked(object sender, EventArgs e)
     {
+        Item.Seeds.Add(new SeedItem());
     }
 }

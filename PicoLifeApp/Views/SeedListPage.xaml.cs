@@ -42,6 +42,13 @@ public partial class SeedListPage : ContentPage
         if (e.CurrentSelection.FirstOrDefault() is not SeedCollection item)
             return;
 
+        var seeds = await database.GetItemsAsync();
+        seeds = seeds.Where(seed => seed.CollectionId == item.ID).ToList();
+        foreach (var seed in seeds)
+        {
+            item.Seeds.Add(seed);
+        }
+
         await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
         {
             ["Item"] = item
