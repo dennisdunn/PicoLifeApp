@@ -43,4 +43,12 @@ public partial class SeedEditPage : ContentPage
     {
         await Shell.Current.GoToAsync("..");
     }
+
+    async void OnDeleteSeedItemClicked(object sender, EventArgs e)
+    {
+    }
+
+    async void OnAddSeedItemClicked(object sender, EventArgs e)
+    {
+    }
 }

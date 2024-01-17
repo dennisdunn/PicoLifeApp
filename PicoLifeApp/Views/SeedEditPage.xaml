@@ -29,6 +29,56 @@
             <Entry Text="{Binding Name}" />
             <Label Text="Notes" />
             <Entry Text="{Binding Notes}" />
+                <CollectionView
+                  VerticalOptions="Fill"
+                  ItemsSource="{Binding Seeds}">
+                    <CollectionView.Header >
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="X" Grid.Column="0" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Y" Grid.Column="1" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Color" Grid.Column="2" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:SeedItem">
+                            <Grid ColumnSpacing="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Entry Text="{Binding X}" Grid.Column="0"  HorizontalTextAlignment="Center" />
+                                <Entry Text="{Binding Y}" Grid.Column="1" HorizontalTextAlignment="Center" />
+                                <Entry Text="{Binding Color}" Grid.Column="2"/>
+                                <ImageButton Clicked="OnDeleteSeedItemClicked" 
+                                             Grid.Column="3"
+                                             Padding="5">
+                                    <ImageButton.Source>
+                                        <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
+                                          Glyph="&#xe5cd;" 
+                                          Color="Black"
+                                          Size="Small" />
+                                    </ImageButton.Source>
+                                </ImageButton>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            <ImageButton Clicked="OnAddSeedItemClicked"
+                          HorizontalOptions="End">
+                <ImageButton.Source>
+                    <FontImageSource FontFamily="MaterialIcons-Regular"
+                                     Glyph="&#xe145;"
+                                     Color="Black"
+                                     Size="Small"/>
+                </ImageButton.Source>
+            </ImageButton>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
