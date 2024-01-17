@@ -81,4 +81,8 @@ public partial class SeedEditPage : ContentPage
     {
         Item.Seeds.Add(new SeedItem());
     }
+
+    void OnUploadClicked(object sender, EventArgs e)
+    {
+    }
 }
