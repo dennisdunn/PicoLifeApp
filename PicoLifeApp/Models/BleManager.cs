@@ -8,7 +8,7 @@ using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
 namespace PicoLife.Models;
 
-public class BleManager:INotifyPropertyChanged
+public class BleManager : Helpers.ObservableBase
 {
     private bool _isScanning, _isConnecting, _isConnected;
 
@@ -18,48 +18,28 @@ public class BleManager:INotifyPropertyChanged
 
     public static BluetoothState Status { get => CrossBluetoothLE.Current.State; }
 
-    public bool IsScanning { get => _isScanning;
-        set
-        {
-            if (_isScanning != value)
-            {
-                _isScanning = value;
-                OnPropertyChanged(); // reports this property
-}
-        } }
+    public bool IsScanning
+    {
+        get => _isScanning;
+        set => SetValue(ref _isScanning, value);
+    }
 
     public bool IsConnecting
     {
         get => _isConnecting;
-        set
-        {
-            if (_isConnecting != value)
-            {
-                _isConnecting = value;
-                OnPropertyChanged(); // reports this property
-            }
-        }
+        set => SetValue(ref _isConnecting, value);
     }
 
     public bool IsConnected
     {
         get => _isConnected;
-        set
-        {
-            if (_isConnected != value)
-            {
-                _isConnected = value;
-                OnPropertyChanged(); // reports this property
-            }
-        }
+        set => SetValue(ref _isConnected, value);
     }
 
     public BleManager()
     {
         Adapter.DeviceDiscovered += (s, a) => Devices.Add(a.Device);
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     public async Task<bool> ScanAsync()
     {
@@ -126,8 +106,6 @@ public class BleManager:INotifyPropertyChanged
             return status;
         }
     }
-    public void OnPropertyChanged([CallerMemberName] string name = "") =>
-     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     #region https://gist.github.com/salarcode/da8ad2b993e67c602db88a62259d0456
     // How to use MAUI Bluetooth LE permissions
