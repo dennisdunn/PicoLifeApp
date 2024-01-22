@@ -6,7 +6,7 @@
              xmlns:models="clr-namespace:PicoLife.Models"
              x:DataType="models:SeedCollection">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Upload" Clicked="OnUploadClicked" IsEnabled="False">
+        <ToolbarItem Text="Upload" Clicked="OnUploadClicked">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIcons-Regular"
                                  Glyph="&#xf09b;"

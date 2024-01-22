@@ -7,14 +7,14 @@ namespace PicoLife.Views;
 [QueryProperty("Item", "Item")]
 public partial class SeedEditPage : ContentPage
 {
-    List<SeedItem> deletedSeeds = [];
+    readonly List<SeedItem> deletedSeeds = [];
 
     public SeedCollection Item
     {
         get => BindingContext as SeedCollection;
         set => BindingContext = value;
     }
-    SeedDatabase database;
+    readonly SeedDatabase database;
     public SeedEditPage(SeedDatabase SeedItemDatabase)
     {
         InitializeComponent();

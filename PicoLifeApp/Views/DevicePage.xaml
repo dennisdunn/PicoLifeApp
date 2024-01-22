@@ -3,10 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:PicoLife.Models"
              xmlns:helpers="clr-namespace:PicoLife.Helpers"
+             xmlns:plugin="clr-namespace:Plugin.BLE.Abstractions.Contracts;assembly=Plugin.BLE"
              x:Class="PicoLife.Views.DevicePage"
              Title="Devices">
+    <ContentPage.BindingContext>
+        <models:BleManager/>
+    </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Scan" Clicked="OnScanClicked" IsEnabled="{Binding IsBusy, Converter={helpers:InverseBoolConverter}}">
+        <ToolbarItem Text="Scan" Clicked="OnScanClicked" IsEnabled="{Binding IsScanning, Converter={helpers:InverseBoolConverter}}">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIcons-Regular"
                                  Glyph="&#xe86a;"
@@ -17,11 +21,11 @@
     <Grid RowDefinitions="*,Auto">
         <CollectionView 
                 VerticalOptions="Fill"
-                ItemsSource="{Binding BleDevices}"
+                ItemsSource="{Binding Devices}"
                 SelectionMode="Single"
                 SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:BleDevice">
+                <DataTemplate x:DataType="plugin:IDevice">
                     <Grid ColumnDefinitions="*, Auto" Padding="20">
                         <Label Text="{Binding Name}"
                                  VerticalTextAlignment="Center"/>

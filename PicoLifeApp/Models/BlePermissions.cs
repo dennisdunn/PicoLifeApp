@@ -1,7 +1,11 @@
 ﻿// STOLEN FROM: https://gist.github.com/salarcode/da8ad2b993e67c602db88a62259d0456
+
+
+namespace PicoLife;
+
 /// <summary>
 /// IMPORTANT: Put this file in root of Application
 /// </summary>
-public partial class BluetoothPermissions : Permissions.BasePlatformPermission
+public partial class BlePermissions : Permissions.BasePlatformPermission
 {
 }

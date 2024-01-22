@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using PicoLife.Data;
+using PicoLife.Models;
 using PicoLife.Views;
 
 namespace PicoLife;
@@ -22,8 +23,9 @@ public static class MauiProgram
         builder.Services.AddTransient<SeedEditPage>();
         builder.Services.AddTransient<DevicePage>();
 
+        builder.Services.AddSingleton<BleManager>();
         builder.Services.AddSingleton<SeedDatabase>();
 
-		return builder.Build();
+        return builder.Build();
 	}
 }

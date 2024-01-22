@@ -3,20 +3,22 @@
 using Microsoft.Maui.ApplicationModel;
 using System.Collections.Generic;
 
+namespace PicoLife;
+
 /// <summary>
 ///		MAUI Bluetooth Permission Decleration (for Android).
 /// </summary>
 /// <remarks>
 ///		IMPORTANT: Put this file in `Platforms/Android/` directory.
 /// </remarks>
-public partial class BluetoothPermissions : Permissions.BasePlatformPermission
+public partial class BlePermissions : Permissions.BasePlatformPermission
 {
     private readonly bool _scan;
     private readonly bool _advertise;
     private readonly bool _connect;
     private readonly bool _bluetoothLocation;
 
-    public BluetoothPermissions()
+    public BlePermissions()
         : this(true, false, true, false)
     {
     }
@@ -34,7 +36,7 @@ public partial class BluetoothPermissions : Permissions.BasePlatformPermission
     /// <remarks>
     ///  https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
     /// </remarks>
-    public BluetoothPermissions(bool scan = true, bool advertise = true, bool connect = true, bool bluetoothLocation = true)
+    public BlePermissions(bool scan = true, bool advertise = true, bool connect = true, bool bluetoothLocation = true)
     {
         _scan = scan;
         _advertise = advertise;
@@ -99,7 +101,7 @@ public partial class BluetoothPermissions : Permissions.BasePlatformPermission
                     }
                 }
             }
-            _requiredPermissions = result.ToArray();
+            _requiredPermissions = [.. result];
 
             return _requiredPermissions;
         }

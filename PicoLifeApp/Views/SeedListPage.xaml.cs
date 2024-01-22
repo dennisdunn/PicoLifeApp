@@ -6,7 +6,7 @@ namespace PicoLife.Views;
 
 public partial class SeedListPage : ContentPage
 {
-    SeedDatabase database;
+    readonly SeedDatabase database;
     public ObservableCollection<SeedCollection> Items { get; set; } = [];
 
     public SeedListPage(SeedDatabase SeedCollectionDatabase)
@@ -39,7 +39,7 @@ public partial class SeedListPage : ContentPage
 
     private async void  CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is not SeedCollection item)
+        if (e.CurrentSelection[0] is not SeedCollection item)
             return;
 
         var seeds = await database.GetItemsAsync();
