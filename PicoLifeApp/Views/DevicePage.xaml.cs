@@ -9,12 +9,15 @@ namespace PicoLife.Views;
 
 public partial class DevicePage : ContentPage
 {
-    public BleManager BleManager { get; set; }
+    public BleManager BleManager
+    {
+        get => BindingContext as BleManager;
+        set => BindingContext = value;
+    }
 
     public DevicePage(BleManager ble)
     {
         InitializeComponent();
-        BindingContext = ble;
 
         BleManager = ble;
     }

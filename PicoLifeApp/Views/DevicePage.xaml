@@ -5,6 +5,7 @@
              xmlns:helpers="clr-namespace:PicoLife.Helpers"
              xmlns:plugin="clr-namespace:Plugin.BLE.Abstractions.Contracts;assembly=Plugin.BLE"
              x:Class="PicoLife.Views.DevicePage"
+             x:DataType="models:BleManager"
              Title="Devices">
     <ContentPage.BindingContext>
         <models:BleManager/>

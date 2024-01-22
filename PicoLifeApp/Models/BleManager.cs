@@ -1,29 +1,65 @@
 ﻿using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
 namespace PicoLife.Models;
 
-public class BleManager
+public class BleManager:INotifyPropertyChanged
 {
+    private bool _isScanning, _isConnecting, _isConnected;
+
     public ObservableCollection<IDevice> Devices { get; set; } = [];
 
     public static IAdapter Adapter { get => CrossBluetoothLE.Current.Adapter; }
 
     public static BluetoothState Status { get => CrossBluetoothLE.Current.State; }
 
-    public bool IsScanning { get; internal set; } = false;
+    public bool IsScanning { get => _isScanning;
+        set
+        {
+            if (_isScanning != value)
+            {
+                _isScanning = value;
+                OnPropertyChanged(); // reports this property
+}
+        } }
 
-    public bool IsConnecting { get; internal set; } = false;
+    public bool IsConnecting
+    {
+        get => _isConnecting;
+        set
+        {
+            if (_isConnecting != value)
+            {
+                _isConnecting = value;
+                OnPropertyChanged(); // reports this property
+            }
+        }
+    }
 
-    public bool IsConnected { get; internal set; } = false;
+    public bool IsConnected
+    {
+        get => _isConnected;
+        set
+        {
+            if (_isConnected != value)
+            {
+                _isConnected = value;
+                OnPropertyChanged(); // reports this property
+            }
+        }
+    }
 
     public BleManager()
     {
         Adapter.DeviceDiscovered += (s, a) => Devices.Add(a.Device);
     }
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public async Task<bool> ScanAsync()
     {
@@ -90,6 +126,8 @@ public class BleManager
             return status;
         }
     }
+    public void OnPropertyChanged([CallerMemberName] string name = "") =>
+     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     #region https://gist.github.com/salarcode/da8ad2b993e67c602db88a62259d0456
     // How to use MAUI Bluetooth LE permissions
