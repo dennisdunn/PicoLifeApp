@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:PicoLife.Models"
              x:Class="PicoLife.Views.SeedListPage"
-             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-             ios:Page.UseSafeArea="True"
              Title="Seeds">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Clicked="OnItemAdded" >

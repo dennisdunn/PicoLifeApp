@@ -14,5 +14,5 @@ public class SeedCollection
     public string Notes { get; set; }
 
     [OneToMany]
-    public ObservableCollection<SeedItem> Seeds { get; set;}=new ObservableCollection<SeedItem>();
+    public ObservableCollection<SeedItem> Seeds { get; set; } = [];
 }

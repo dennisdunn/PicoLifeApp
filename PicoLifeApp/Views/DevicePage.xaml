@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PicoLife.Views.DevicePage"
-             Title="Devices"
              xmlns:models="clr-namespace:PicoLife.Models"
-             x:DataType="models:BleDevice">
+             xmlns:helpers="clr-namespace:PicoLife.Helpers"
+             x:Class="PicoLife.Views.DevicePage"
+             Title="Devices">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Scan" Clicked="OnScanClicked" >
+        <ToolbarItem Text="Scan" Clicked="OnScanClicked" IsEnabled="{Binding IsBusy, Converter={helpers:InverseBoolConverter}}">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIcons-Regular"
                                  Glyph="&#xe86a;"
@@ -14,14 +14,20 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    <ScrollView>
-        <VerticalStackLayout Padding="20"
-                             Spacing="10"
-                             VerticalOptions="StartAndExpand">
-            <Label 
-            Text="BLE Devices"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-        </VerticalStackLayout>
-    </ScrollView>
+    <Grid RowDefinitions="*,Auto">
+        <CollectionView 
+                VerticalOptions="Fill"
+                ItemsSource="{Binding BleDevices}"
+                SelectionMode="Single"
+                SelectionChanged="CollectionView_SelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:BleDevice">
+                    <Grid ColumnDefinitions="*, Auto" Padding="20">
+                        <Label Text="{Binding Name}"
+                                 VerticalTextAlignment="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>

@@ -7,7 +7,7 @@ namespace PicoLife.Views;
 public partial class SeedListPage : ContentPage
 {
     SeedDatabase database;
-    public ObservableCollection<SeedCollection> Items { get; set; } = new();
+    public ObservableCollection<SeedCollection> Items { get; set; } = [];
 
     public SeedListPage(SeedDatabase SeedCollectionDatabase)
 	{

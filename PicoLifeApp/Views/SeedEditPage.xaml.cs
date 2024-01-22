@@ -7,8 +7,6 @@ namespace PicoLife.Views;
 [QueryProperty("Item", "Item")]
 public partial class SeedEditPage : ContentPage
 {
-    SeedCollection item;
-
     List<SeedItem> deletedSeeds = [];
 
     public SeedCollection Item
@@ -31,6 +29,8 @@ public partial class SeedEditPage : ContentPage
             return;
         }
 
+        IsBusy=true;
+
         await database.SaveCollectionAsync(Item);
 
         foreach (var seed in Item.Seeds)
@@ -43,6 +43,8 @@ public partial class SeedEditPage : ContentPage
         {
             await database.DeleteItemAsync(seed);
         }
+
+        IsBusy = false;
 
         await Shell.Current.GoToAsync("..");
     }
