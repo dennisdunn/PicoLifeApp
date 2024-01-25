@@ -2,14 +2,15 @@
 using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
+using Plugin.BLE.Abstractions.Extensions;
 using System.Collections.ObjectModel;
 using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
 namespace PicoLife.Models;
 
-public class BleManager : ObservableBase
+public class BleManager : ObservableBase, IDisposable
 {
-    private bool _isScanning, _isConnecting, _isConnected;
+    private bool _isScanning, _isConnecting, _isConnected, disposedValue;
 
     private CancellationTokenSource _cancellationTokenSource;
 
@@ -37,44 +38,51 @@ public class BleManager : ObservableBase
         set => SetValue(ref _isConnected, value);
     }
 
-    public BleManager() : this(10_000) { }
-
-    public BleManager(int timeout)
+    public BleManager()
     {
         Adapter.DeviceDiscovered += OnDeviceDiscovered;
         Adapter.DeviceAdvertised += OnDeviceDiscovered;
         Adapter.ScanTimeoutElapsed += OnScanTimeout;
-        Adapter.ScanTimeout = timeout;
+        Adapter.ScanMode = ScanMode.LowLatency;
     }
 
     private void OnDeviceDiscovered(object sender, DeviceEventArgs e)
     {
-        Devices.Add(e.Device);
+        MainThread.BeginInvokeOnMainThread(() => Devices.Add(e.Device));
+        //Devices.Add(e.Device);
     }
 
-    public async Task<bool> ScanAsync()
+    public async Task ScanAsync(int timeout = 10_000)
     {
-        var success = false;
-
-        _cancellationTokenSource = new CancellationTokenSource();
-
         if (await CheckAndRequstBleAccess())
         {
             IsScanning = true;
 
-            await Adapter.StartScanningForDevicesAsync();
+            Adapter.ScanTimeout = timeout;
 
-            IsScanning = false;
+            _cancellationTokenSource = new CancellationTokenSource();
 
-            success = true;
-        }
-        return success;
+            await Adapter.StartScanningForDevicesAsync(_cancellationTokenSource.Token);
+        };
     }
 
-    private void OnScanTimeout(object sender, EventArgs e)
+    public async Task CancelAsync()
     {
-      //  throw new NotImplementedException();
-      Console.WriteLine("scan timeout");
+        _cancellationTokenSource.Cancel();
+
+        await Task.Run(() => CleanupScan());
+    }
+
+    public void OnScanTimeout(object sender, EventArgs e)
+    {
+        CleanupScan();
+    }
+
+    private void CleanupScan()
+    {
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        IsScanning = false;
     }
 
     public async Task<bool> ConnectAsync(Guid deviceId)
@@ -117,4 +125,37 @@ public class BleManager : ObservableBase
         var status = await DroidPlatformHelpers.CheckAndRequestBluetoothPermissions();
         return status == PermissionStatus.Granted;
     }
+
+    #region IDisposable
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                Adapter.DeviceDiscovered -= OnDeviceDiscovered;
+                Adapter.DeviceAdvertised -= OnDeviceDiscovered;
+                Adapter.ScanTimeoutElapsed -= OnScanTimeout;
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            disposedValue = true;
+        }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~BleManager()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion
 }

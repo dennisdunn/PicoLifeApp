@@ -14,16 +14,9 @@
         <ToolbarItem Text="Scan" 
                      x:Name="ToolbarStartScan"
                      Clicked="OnScanClicked"/>
-        <ToolbarItem Text="Stop" 
+        <ToolbarItem Text="Cancel" 
                      x:Name="ToolbarStopScan"
                      Clicked="OnScanStopped"/>
-
-        <!--<ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="MaterialIcons-Regular"
-                                 Glyph="&#xe86a;"
-                                 Size="Large" />
-            </ToolbarItem.IconImageSource>-->
-        <!--</ToolbarItem>-->
     </ContentPage.ToolbarItems>
     <Grid RowDefinitions="*,Auto">
         <CollectionView 

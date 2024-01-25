@@ -42,9 +42,8 @@ public partial class DevicePage : ContentPage
 
     async void OnScanStopped(object sender, EventArgs e)
     {
+        await BleManager.CancelAsync();
         SetupToolbar(ToolbarStartScan);
-        //IsBusy = true;
-        //await BleManager.ScanAsync();
         IsBusy = false;
     }
 
