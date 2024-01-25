@@ -1,16 +1,17 @@
-﻿using Plugin.BLE;
+﻿using PicoLife.Helpers;
+using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE.Abstractions.EventArgs;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
 namespace PicoLife.Models;
 
-public class BleManager : Helpers.ObservableBase
+public class BleManager : ObservableBase
 {
     private bool _isScanning, _isConnecting, _isConnected;
+
+    private CancellationTokenSource _cancellationTokenSource;
 
     public ObservableCollection<IDevice> Devices { get; set; } = [];
 
@@ -36,20 +37,31 @@ public class BleManager : Helpers.ObservableBase
         set => SetValue(ref _isConnected, value);
     }
 
-    public BleManager()
+    public BleManager() : this(10_000) { }
+
+    public BleManager(int timeout)
     {
-        Adapter.DeviceDiscovered += (s, a) => Devices.Add(a.Device);
+        Adapter.DeviceDiscovered += OnDeviceDiscovered;
+        Adapter.DeviceAdvertised += OnDeviceDiscovered;
+        Adapter.ScanTimeoutElapsed += OnScanTimeout;
+        Adapter.ScanTimeout = timeout;
+    }
+
+    private void OnDeviceDiscovered(object sender, DeviceEventArgs e)
+    {
+        Devices.Add(e.Device);
     }
 
     public async Task<bool> ScanAsync()
     {
         var success = false;
 
+        _cancellationTokenSource = new CancellationTokenSource();
+
         if (await CheckAndRequstBleAccess())
         {
             IsScanning = true;
 
-            // await MainThread.InvokeOnMainThreadAsync(async () => await Adapter.StartScanningForDevicesAsync());
             await Adapter.StartScanningForDevicesAsync();
 
             IsScanning = false;
@@ -57,6 +69,12 @@ public class BleManager : Helpers.ObservableBase
             success = true;
         }
         return success;
+    }
+
+    private void OnScanTimeout(object sender, EventArgs e)
+    {
+      //  throw new NotImplementedException();
+      Console.WriteLine("scan timeout");
     }
 
     public async Task<bool> ConnectAsync(Guid deviceId)
@@ -96,48 +114,7 @@ public class BleManager : Helpers.ObservableBase
 
     public static async Task<bool> CheckAndRequstBleAccess()
     {
-        var status = await CheckBluetoothStatus();
-        if (!status)
-        {
-            return await RequestBluetoothAccess();
-        }
-        else
-        {
-            return status;
-        }
+        var status = await DroidPlatformHelpers.CheckAndRequestBluetoothPermissions();
+        return status == PermissionStatus.Granted;
     }
-
-    #region https://gist.github.com/salarcode/da8ad2b993e67c602db88a62259d0456
-    // How to use MAUI Bluetooth LE permissions
-
-    public static async Task<bool> CheckBluetoothStatus()
-    {
-        try
-        {
-            var requestStatus = await new BlePermissions().CheckStatusAsync();
-            return requestStatus == PermissionStatus.Granted;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-
-            return false;
-        }
-    }
-
-    public static async Task<bool> RequestBluetoothAccess()
-    {
-        try
-        {
-            var requestStatus = await new BlePermissions().RequestAsync();
-            return requestStatus == PermissionStatus.Granted;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-
-            return false;
-        }
-    }
-    #endregion
 }

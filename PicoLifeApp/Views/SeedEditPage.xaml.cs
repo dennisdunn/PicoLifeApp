@@ -49,18 +49,6 @@ public partial class SeedEditPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 
-    async void OnDeleteClicked(object sender, EventArgs e)
-    {
-        if (Item.ID == 0)
-            return;
-        foreach (var seed in deletedSeeds)
-        {
-            await database.DeleteItemAsync(seed);
-        }
-        await database.DeleteCollectionAsync(Item);
-        await Shell.Current.GoToAsync("..");
-    }
-
     async void OnCancelClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");

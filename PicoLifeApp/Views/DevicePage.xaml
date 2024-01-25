@@ -11,13 +11,19 @@
         <models:BleManager/>
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Scan" Clicked="OnScanClicked" IsEnabled="{Binding IsScanning, Converter={helpers:InverseBoolConverter}}">
-            <ToolbarItem.IconImageSource>
+        <ToolbarItem Text="Scan" 
+                     x:Name="ToolbarStartScan"
+                     Clicked="OnScanClicked"/>
+        <ToolbarItem Text="Stop" 
+                     x:Name="ToolbarStopScan"
+                     Clicked="OnScanStopped"/>
+
+        <!--<ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIcons-Regular"
                                  Glyph="&#xe86a;"
                                  Size="Large" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
+            </ToolbarItem.IconImageSource>-->
+        <!--</ToolbarItem>-->
     </ContentPage.ToolbarItems>
     <Grid RowDefinitions="*,Auto">
         <CollectionView 

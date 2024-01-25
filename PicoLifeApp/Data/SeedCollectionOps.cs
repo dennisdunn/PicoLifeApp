@@ -34,6 +34,12 @@ public partial class SeedDatabase
     public async Task<int> DeleteCollectionAsync(SeedCollection Collection)
     {
         await Init();
+
+        foreach (var item in Collection.Seeds)
+        {
+            await DeleteItemAsync(item);
+        }
+
         return await Database.DeleteAsync(Collection);
     }
 }

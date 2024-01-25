@@ -36,6 +36,15 @@ public partial class SeedListPage : ContentPage
             ["Item"] = new SeedCollection()
         });
     }
+    async void OnItemDeleted(object sender, EventArgs e)
+    {
+        var btn = (ImageButton)sender;
+        var item = (SeedCollection)btn.BindingContext;
+        
+        await database.DeleteCollectionAsync(item);
+        Items.Remove(item);
+       // await Shell.Current.GoToAsync("..");
+    }
 
     private async void  CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

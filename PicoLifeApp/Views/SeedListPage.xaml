@@ -4,16 +4,9 @@
              xmlns:models="clr-namespace:PicoLife.Models"
              x:Class="PicoLife.Views.SeedListPage"
              Title="Seeds">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Clicked="OnItemAdded" >
-            <ToolbarItem.IconImageSource>
-            <FontImageSource FontFamily="MaterialIcons-Regular"
-                                 Glyph="&#xe145;"
-                                 Size="Large" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-    </ContentPage.ToolbarItems>
-    <Grid RowDefinitions="*,Auto">
+    <VerticalStackLayout Padding="20"
+                             Spacing="10"
+                             VerticalOptions="StartAndExpand">
         <CollectionView 
                   VerticalOptions="Fill"
                   ItemsSource="{Binding Items}"
@@ -22,11 +15,21 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SeedCollection">
                     <Grid ColumnDefinitions="*, Auto" Padding="20">
-                        <Label Text="{Binding Name}"
+                        <Label Text="{Binding Name}" Grid.Column="0"
                                    VerticalTextAlignment="Center"/>
+                        <ImageButton Clicked="OnItemDeleted" 
+                              Grid.Column="1">
+                            <ImageButton.Source>
+                                <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
+                                   Glyph="&#xe15b;" 
+                                   Color="Black"
+                                   Size="Small" />
+                            </ImageButton.Source>
+                        </ImageButton>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </Grid>
+        <Button Text="New" Clicked="OnItemAdded"/>
+    </VerticalStackLayout>
 </ContentPage>

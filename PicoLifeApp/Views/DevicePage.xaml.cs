@@ -20,12 +20,31 @@ public partial class DevicePage : ContentPage
         InitializeComponent();
 
         BleManager = ble;
+        
+        SetupToolbar(ToolbarStartScan);
+    }
+
+    private void SetupToolbar(ToolbarItem toolbar)
+    {
+        ToolbarItems.Clear();
+        ToolbarItems.Add(toolbar);
     }
 
     async void OnScanClicked(object sender, EventArgs e)
     {
+        SetupToolbar(ToolbarStopScan);
         IsBusy = true;
         await BleManager.ScanAsync();
+        IsBusy = false;
+        SetupToolbar(ToolbarStartScan);
+    }
+
+
+    async void OnScanStopped(object sender, EventArgs e)
+    {
+        SetupToolbar(ToolbarStartScan);
+        //IsBusy = true;
+        //await BleManager.ScanAsync();
         IsBusy = false;
     }
 

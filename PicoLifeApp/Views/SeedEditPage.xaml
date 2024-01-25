@@ -20,13 +20,6 @@
                                  Size="Large" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
-        <ToolbarItem Text="Delete" Clicked="OnDeleteClicked" >
-            <ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="MaterialIcons-Regular"
-                                 Glyph="&#xe872;"
-                                 Size="Large" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
     </ContentPage.ToolbarItems>
     <ScrollView>
         <VerticalStackLayout Padding="20"
@@ -68,7 +61,7 @@
                                              Padding="5">
                                     <ImageButton.Source>
                                         <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
-                                          Glyph="&#xe5cd;" 
+                                          Glyph="&#xe15b;" 
                                           Color="Black"
                                           Size="Small" />
                                     </ImageButton.Source>
@@ -83,7 +76,7 @@
                     <FontImageSource FontFamily="MaterialIcons-Regular"
                                      Glyph="&#xe145;"
                                      Color="Black"
-                                     Size="Small"/>
+                                     Size="Large"/>
                 </ImageButton.Source>
             </ImageButton>
         </VerticalStackLayout>
