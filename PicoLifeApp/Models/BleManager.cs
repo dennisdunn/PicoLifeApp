@@ -61,8 +61,15 @@ public class BleManager : ObservableBase, IDisposable
             Adapter.ScanTimeout = timeout;
 
             _cancellationTokenSource = new CancellationTokenSource();
+            try
+            {
 
-            await Adapter.StartScanningForDevicesAsync(_cancellationTokenSource.Token);
+                await Adapter.StartScanningForDevicesAsync(_cancellationTokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                _cancellationTokenSource.Cancel();
+            }
         };
     }
 
