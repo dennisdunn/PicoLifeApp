@@ -14,9 +14,12 @@
                   SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SeedCollection">
-                    <Grid ColumnDefinitions="*, Auto" Padding="20">
-                        <Label Text="{Binding Name}" Grid.Column="0"
-                                   VerticalTextAlignment="Center"/>
+                    <Grid ColumnDefinitions="*, Auto"  
+                          Padding="0,5,20,5">
+                        <Label Text="{Binding Name}" 
+                               Grid.Column="0"
+                               FontAttributes="Bold"
+                               VerticalTextAlignment="Center"/>
                         <ImageButton Clicked="OnItemDeleted" 
                               Grid.Column="1">
                             <ImageButton.Source>
@@ -30,6 +33,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Button Text="New" Clicked="OnItemAdded"/>
+        <Button Text="New" Clicked="OnItemAdded"
+                Margin="0,30,0,0"/>
     </VerticalStackLayout>
 </ContentPage>

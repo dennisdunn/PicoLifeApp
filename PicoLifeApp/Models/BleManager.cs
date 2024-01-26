@@ -48,28 +48,25 @@ public class BleManager : ObservableBase, IDisposable
 
     private void OnDeviceDiscovered(object sender, DeviceEventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(() => Devices.Add(e.Device));
-        //Devices.Add(e.Device);
+        if (Devices.FirstOrDefault(d => d.Id.Equals(e.Device.Id)) == null && !string.IsNullOrEmpty(e.Device.Name))
+        {
+            Devices.Add(e.Device);
+        }
     }
 
     public async Task ScanAsync(int timeout = 10_000)
     {
         if (await CheckAndRequstBleAccess())
         {
+            Devices.Clear();
+
             IsScanning = true;
 
             Adapter.ScanTimeout = timeout;
 
             _cancellationTokenSource = new CancellationTokenSource();
-            try
-            {
 
-                await Adapter.StartScanningForDevicesAsync(_cancellationTokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                _cancellationTokenSource.Cancel();
-            }
+            await Adapter.StartScanningForDevicesAsync(_cancellationTokenSource.Token);
         };
     }
 

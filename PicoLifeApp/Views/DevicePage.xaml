@@ -18,7 +18,10 @@
                      x:Name="ToolbarStopScan"
                      Clicked="OnScanStopped"/>
     </ContentPage.ToolbarItems>
-    <Grid RowDefinitions="*,Auto">
+
+    <VerticalStackLayout Padding="20"
+                             Spacing="10"
+                             VerticalOptions="StartAndExpand">
         <CollectionView 
                 VerticalOptions="Fill"
                 ItemsSource="{Binding Devices}"
@@ -26,12 +29,12 @@
                 SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="plugin:IDevice">
-                    <Grid ColumnDefinitions="*, Auto" Padding="20">
-                        <Label Text="{Binding Name}"
-                                 VerticalTextAlignment="Center"/>
-                    </Grid>
+                    <Label Text="{Binding Name}" 
+                           Padding="0,5"
+                           FontAttributes="Bold"
+                           VerticalTextAlignment="Center"/>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </Grid>
+    </VerticalStackLayout>
 </ContentPage>
