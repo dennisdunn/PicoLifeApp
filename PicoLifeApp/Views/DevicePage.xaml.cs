@@ -49,7 +49,7 @@ public partial class DevicePage : ContentPage
 
     private async void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection[0] is not IDevice device)
+        if (e.CurrentSelection[0] is not BleDevice device)
             return;
 
         IsBusy = true;

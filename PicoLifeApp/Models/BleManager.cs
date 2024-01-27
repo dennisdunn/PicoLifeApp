@@ -10,33 +10,18 @@ namespace PicoLife.Models;
 
 public class BleManager : ObservableBase, IDisposable
 {
-    private bool _isScanning, _isConnecting, _isConnected, disposedValue;
-
     private CancellationTokenSource _cancellationTokenSource;
 
-    public ObservableCollection<IDevice> Devices { get; set; } = [];
+    public ObservableCollection<BleDevice> Devices { get; set; } = [];
 
     public static IAdapter Adapter { get => CrossBluetoothLE.Current.Adapter; }
 
     public static BluetoothState Status { get => CrossBluetoothLE.Current.State; }
 
-    public bool IsScanning
-    {
-        get => _isScanning;
-        set => SetValue(ref _isScanning, value);
-    }
+    public bool IsScanning { get => Adapter.IsScanning; }
 
-    public bool IsConnecting
-    {
-        get => _isConnecting;
-        set => SetValue(ref _isConnecting, value);
-    }
-
-    public bool IsConnected
-    {
-        get => _isConnected;
-        set => SetValue(ref _isConnected, value);
-    }
+    public bool IsError { get => _isError; set => SetValue(ref _isError, value); }
+    public string Message { get => _message; set => SetValue(ref _message, value); }
 
     public BleManager()
     {
@@ -44,13 +29,40 @@ public class BleManager : ObservableBase, IDisposable
         Adapter.DeviceAdvertised += OnDeviceDiscovered;
         Adapter.ScanTimeoutElapsed += OnScanTimeout;
         Adapter.ScanMode = ScanMode.LowLatency;
+
+        Adapter.DeviceConnectionError += OnDeviceConnectionError;
+        Adapter.DeviceConnected += OnDeviceConnected;
+        Adapter.DeviceDisconnected += OnDeviceDisconnected;
+    }
+
+    private void OnDeviceDisconnected(object sender, DeviceEventArgs e)
+    {
+        var id = e.Device.Id;
+        var device = Devices.FirstOrDefault(d => d.Id == id);
+        if (device != null) device.IsConnected = false;
+    }
+
+    private void OnDeviceConnected(object sender, DeviceEventArgs e)
+    {
+        var id = e.Device.Id;
+        var device = Devices.FirstOrDefault(d => d.Id == id);
+        if (device != null) device.IsConnected = true;
+    }
+
+    private async void OnDeviceConnectionError(object sender, DeviceErrorEventArgs e)
+    {
+        await Task.Run(() =>
+        {
+            IsError = true;
+            Message = e.ErrorMessage;
+        });
     }
 
     private void OnDeviceDiscovered(object sender, DeviceEventArgs e)
     {
         if (Devices.FirstOrDefault(d => d.Id.Equals(e.Device.Id)) == null && !string.IsNullOrEmpty(e.Device.Name))
         {
-            Devices.Add(e.Device);
+            Devices.Add(new BleDevice(e.Device));
         }
     }
 
@@ -59,8 +71,6 @@ public class BleManager : ObservableBase, IDisposable
         if (await CheckAndRequstBleAccess())
         {
             Devices.Clear();
-
-            IsScanning = true;
 
             Adapter.ScanTimeout = timeout;
 
@@ -86,42 +96,32 @@ public class BleManager : ObservableBase, IDisposable
     {
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
-        IsScanning = false;
     }
 
-    public async Task<bool> ConnectAsync(Guid deviceId)
+    public async Task ConnectAsync(Guid deviceId)
     {
-        IsConnected = false;
-
         if (await CheckAndRequstBleAccess())
         {
-            IsConnecting = true;
-
             await Adapter.ConnectToKnownDeviceAsync(deviceId);
-
-            IsConnecting = false;
-
-            IsConnected = true;
         }
-
-        return IsConnected;
     }
-    public async Task<bool> ConnectAsync(IDevice device)
+    public async Task ConnectAsync(BleDevice device)
     {
-        IsConnected = false;
-
         if (await CheckAndRequstBleAccess())
         {
-            IsConnecting = true;
-
-            await Adapter.ConnectToDeviceAsync(device);
-
-            IsConnecting = false;
-
-            IsConnected = true;
+            await Adapter.ConnectToDeviceAsync(device.Device);
         }
-
-        return IsConnected;
+    }
+    public async Task DisconnectAsync()
+    {
+        if (await CheckAndRequstBleAccess())
+        {
+            var device = Devices.FirstOrDefault(d => d.IsConnected == true);
+            if (device != null)
+            {
+                await Adapter.DisconnectDeviceAsync(device.Device);
+            }
+        }
     }
 
     public static async Task<bool> CheckAndRequstBleAccess()
@@ -131,6 +131,11 @@ public class BleManager : ObservableBase, IDisposable
     }
 
     #region IDisposable
+
+    private bool disposedValue;
+    private bool _isError;
+    private string _message;
+
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)
@@ -140,6 +145,10 @@ public class BleManager : ObservableBase, IDisposable
                 Adapter.DeviceDiscovered -= OnDeviceDiscovered;
                 Adapter.DeviceAdvertised -= OnDeviceDiscovered;
                 Adapter.ScanTimeoutElapsed -= OnScanTimeout;
+
+                Adapter.DeviceConnectionError -= OnDeviceConnectionError;
+                Adapter.DeviceConnected -= OnDeviceConnected;
+                Adapter.DeviceDisconnected -= OnDeviceDisconnected;
             }
 
             // TODO: free unmanaged resources (unmanaged objects) and override finalizer

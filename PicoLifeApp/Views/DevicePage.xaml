@@ -28,11 +28,24 @@
                 SelectionMode="Single"
                 SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="plugin:IDevice">
-                    <Label Text="{Binding Name}" 
+                <DataTemplate x:DataType="models:BleDevice">
+                    <Grid ColumnDefinitions="*, Auto"  
+                          Padding="0,5,20,5">
+                        <Label Text="{Binding Name}" 
+                           Grid.Column="0"
                            Padding="0,5"
                            FontAttributes="Bold"
                            VerticalTextAlignment="Center"/>
+                        <Image Grid.Column="1"
+                               IsVisible="{Binding IsConnected}">
+                            <Image.Source>
+                                <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
+                                   Glyph="&#xe5ca;" 
+                                   Color="Black"
+                                   Size="Small"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
