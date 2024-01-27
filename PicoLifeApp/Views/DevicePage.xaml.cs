@@ -20,7 +20,7 @@ public partial class DevicePage : ContentPage
         InitializeComponent();
 
         BleManager = ble;
-        
+
         SetupToolbar(ToolbarStartScan);
     }
 
@@ -47,13 +47,47 @@ public partial class DevicePage : ContentPage
         IsBusy = false;
     }
 
-    private async void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void OnConnectToDevice(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection[0] is not BleDevice device)
-            return;
+        try
+        {
+            if (BleManager.IsScanning) return;
+            if (e.CurrentSelection.Count == 0) return;
+            if (e.CurrentSelection[0] is not BleDevice device) return;
+            if (device.IsConnected) return;
 
-        IsBusy = true;
-        await BleManager.ConnectAsync(device);
-        IsBusy = false;
+            if(BleManager.Devices.Any(d=>d.IsConnected)) await BleManager.DisconnectCurrentAsync();
+
+            IsBusy = true;
+            await BleManager.ConnectAsync(device);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Connect Error", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+            DevicesView.SelectedItem = null;
+        }
+    }
+    private async void OnDisconnectClicked(object sender, EventArgs e)
+    {
+        var device = BleManager.Devices.FirstOrDefault(d => d.IsConnected);
+
+        try
+        {
+            IsBusy = true;
+            await BleManager.DisconnectAsync(device);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Disconnect Error", ex.Message, "OK");
+        }
+        finally
+        {
+            if (DevicesView.SelectedItem != null) DevicesView.SelectedItem = null;
+            IsBusy = false;
+        }
     }
 }

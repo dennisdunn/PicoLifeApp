@@ -20,9 +20,6 @@ public class BleManager : ObservableBase, IDisposable
 
     public bool IsScanning { get => Adapter.IsScanning; }
 
-    public bool IsError { get => _isError; set => SetValue(ref _isError, value); }
-    public string Message { get => _message; set => SetValue(ref _message, value); }
-
     public BleManager()
     {
         Adapter.DeviceDiscovered += OnDeviceDiscovered;
@@ -35,13 +32,6 @@ public class BleManager : ObservableBase, IDisposable
         Adapter.DeviceDisconnected += OnDeviceDisconnected;
     }
 
-    private void OnDeviceDisconnected(object sender, DeviceEventArgs e)
-    {
-        var id = e.Device.Id;
-        var device = Devices.FirstOrDefault(d => d.Id == id);
-        if (device != null) device.IsConnected = false;
-    }
-
     private void OnDeviceConnected(object sender, DeviceEventArgs e)
     {
         var id = e.Device.Id;
@@ -49,18 +39,20 @@ public class BleManager : ObservableBase, IDisposable
         if (device != null) device.IsConnected = true;
     }
 
-    private async void OnDeviceConnectionError(object sender, DeviceErrorEventArgs e)
+    private void OnDeviceDisconnected(object sender, DeviceEventArgs e)
     {
-        await Task.Run(() =>
-        {
-            IsError = true;
-            Message = e.ErrorMessage;
-        });
+        var id = e.Device.Id;
+        var device = Devices.FirstOrDefault(d => d.Id == id);
+        if (device != null) device.IsConnected = false;
+    }
+
+    private void OnDeviceConnectionError(object sender, DeviceErrorEventArgs e)
+    {
     }
 
     private void OnDeviceDiscovered(object sender, DeviceEventArgs e)
     {
-        if (Devices.FirstOrDefault(d => d.Id.Equals(e.Device.Id)) == null && !string.IsNullOrEmpty(e.Device.Name))
+        if (!Devices.Any(d => d.Id.Equals(e.Device.Id)) && !string.IsNullOrEmpty(e.Device.Name))
         {
             Devices.Add(new BleDevice(e.Device));
         }
@@ -68,8 +60,11 @@ public class BleManager : ObservableBase, IDisposable
 
     public async Task ScanAsync(int timeout = 10_000)
     {
+
         if (await CheckAndRequstBleAccess())
         {
+            await DisconnectCurrentAsync();
+
             Devices.Clear();
 
             Adapter.ScanTimeout = timeout;
@@ -98,13 +93,6 @@ public class BleManager : ObservableBase, IDisposable
         _cancellationTokenSource = null;
     }
 
-    public async Task ConnectAsync(Guid deviceId)
-    {
-        if (await CheckAndRequstBleAccess())
-        {
-            await Adapter.ConnectToKnownDeviceAsync(deviceId);
-        }
-    }
     public async Task ConnectAsync(BleDevice device)
     {
         if (await CheckAndRequstBleAccess())
@@ -112,15 +100,21 @@ public class BleManager : ObservableBase, IDisposable
             await Adapter.ConnectToDeviceAsync(device.Device);
         }
     }
-    public async Task DisconnectAsync()
+
+    public async Task DisconnectAsync(BleDevice device)
     {
         if (await CheckAndRequstBleAccess())
         {
-            var device = Devices.FirstOrDefault(d => d.IsConnected == true);
-            if (device != null)
-            {
-                await Adapter.DisconnectDeviceAsync(device.Device);
-            }
+            await Adapter.DisconnectDeviceAsync(device.Device);
+        }
+    }
+
+    public async Task DisconnectCurrentAsync()
+    {
+        var currentDevice = Devices.FirstOrDefault(d => d.IsConnected);
+        if (currentDevice != null)
+        {
+            await DisconnectAsync(currentDevice);
         }
     }
 
@@ -135,6 +129,7 @@ public class BleManager : ObservableBase, IDisposable
     private bool disposedValue;
     private bool _isError;
     private string _message;
+    private BleDevice _device;
 
     protected virtual void Dispose(bool disposing)
     {

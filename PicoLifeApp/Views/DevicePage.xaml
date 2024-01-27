@@ -20,13 +20,14 @@
     </ContentPage.ToolbarItems>
 
     <VerticalStackLayout Padding="20"
-                             Spacing="10"
-                             VerticalOptions="StartAndExpand">
+                         Spacing="10"
+                         VerticalOptions="StartAndExpand">
         <CollectionView 
                 VerticalOptions="Fill"
                 ItemsSource="{Binding Devices}"
                 SelectionMode="Single"
-                SelectionChanged="CollectionView_SelectionChanged">
+                SelectionChanged="OnConnectToDevice"
+                x:Name="DevicesView">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:BleDevice">
                     <Grid ColumnDefinitions="*, Auto"  
@@ -36,15 +37,16 @@
                            Padding="0,5"
                            FontAttributes="Bold"
                            VerticalTextAlignment="Center"/>
-                        <Image Grid.Column="1"
+                        <ImageButton Grid.Column="1"
+                                     Clicked="OnDisconnectClicked"
                                IsVisible="{Binding IsConnected}">
-                            <Image.Source>
+                            <ImageButton.Source>
                                 <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
                                    Glyph="&#xe5ca;" 
                                    Color="Black"
-                                   Size="Small"/>
-                            </Image.Source>
-                        </Image>
+                                   Size="Large"/>
+                            </ImageButton.Source>
+                        </ImageButton>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
