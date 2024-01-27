@@ -15,4 +15,9 @@ public class SeedCollection
 
     [OneToMany]
     public ObservableCollection<SeedItem> Seeds { get; set; } = [];
+
+    public override string ToString()
+    {
+        return $"[{string.Join(",",Seeds.Select(s=>s.ToString()))}]";
+    }
 }

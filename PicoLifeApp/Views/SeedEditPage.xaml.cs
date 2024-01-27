@@ -9,16 +9,19 @@ public partial class SeedEditPage : ContentPage
 {
     readonly List<SeedItem> deletedSeeds = [];
 
+    public BleManager BleManager { get; set; }
+
     public SeedCollection Item
     {
         get => BindingContext as SeedCollection;
         set => BindingContext = value;
     }
     readonly SeedDatabase database;
-    public SeedEditPage(SeedDatabase SeedItemDatabase)
+    public SeedEditPage(SeedDatabase SeedItemDatabase, BleManager ble)
     {
         InitializeComponent();
         database = SeedItemDatabase;
+        BleManager = ble;
     }
 
     async void OnSaveClicked(object sender, EventArgs e)
@@ -29,7 +32,7 @@ public partial class SeedEditPage : ContentPage
             return;
         }
 
-        IsBusy=true;
+        IsBusy = true;
 
         await database.SaveCollectionAsync(Item);
 
@@ -72,7 +75,8 @@ public partial class SeedEditPage : ContentPage
         Item.Seeds.Add(new SeedItem());
     }
 
-    void OnUploadClicked(object sender, EventArgs e)
+    async void OnUploadClicked(object sender, EventArgs e)
     {
+        await BleManager.Send(Item.ToString());
     }
 }

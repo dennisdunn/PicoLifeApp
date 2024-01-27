@@ -4,6 +4,7 @@ using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Extensions;
 using System.Collections.ObjectModel;
+using System.Text;
 using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
 namespace PicoLife.Models;
@@ -124,6 +125,27 @@ public class BleManager : ObservableBase, IDisposable
         return status == PermissionStatus.Granted;
     }
 
+    public async Task<IService> GetUartService(IDevice device)
+    {
+        return await device.GetServiceAsync(BLE.UART_SERVICE);
+    }
+
+    public async Task<ICharacteristic> GetUartCharacteristic(IService service, Guid id)
+    {
+        return await service.GetCharacteristicAsync(id);
+    }
+
+    public async Task Send(string data)
+    {
+        var device = Devices.FirstOrDefault(d => d.IsConnected);
+        if (device != null)
+        {
+            var service = await GetUartService(device.Device);
+            var rx = await GetUartCharacteristic(service, BLE.UART_RX_CHARACTERISTIC);
+            await rx.WriteAsync(Encoding.ASCII.GetBytes(data));
+        }
+    }
+
     #region IDisposable
 
     private bool disposedValue;
@@ -166,4 +188,11 @@ public class BleManager : ObservableBase, IDisposable
         GC.SuppressFinalize(this);
     }
     #endregion
+}
+
+public static class BLE
+{
+    public static Guid UART_SERVICE = Guid.Parse("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
+    public static Guid UART_RX_CHARACTERISTIC = Guid.Parse("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
+    public static Guid UART_TX_CHARACTERISTIC = Guid.Parse("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
 }

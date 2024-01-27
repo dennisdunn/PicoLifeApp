@@ -14,4 +14,9 @@ public class SeedItem
 
     [ForeignKey(typeof(SeedCollection))]
     public int CollectionId { get; set; }
+
+    public override string ToString()
+    {
+        return $"({X},{Y})";
+    }
 }
