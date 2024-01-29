@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using PicoLife.Data;
-using PicoLife.Models;
+﻿using PicoLife.Services;
 using PicoLife.Views;
 
 namespace PicoLife;

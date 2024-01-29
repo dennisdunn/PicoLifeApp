@@ -1,13 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using PicoLife.Data;
-using PicoLife.Models;
+﻿using PicoLife.Models;
+using System.Collections.ObjectModel;
+using PicoLife.Services;
 
 namespace PicoLife.Views;
 
 public partial class SeedListPage : ContentPage
 {
     readonly SeedDatabase database;
-    public ObservableCollection<SeedCollection> Items { get; set; } = [];
+    public ObservableCollection<Seed> Items { get; set; } = [];
 
     public SeedListPage(SeedDatabase SeedCollectionDatabase)
 	{
@@ -33,13 +33,13 @@ public partial class SeedListPage : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
         {
-            ["Item"] = new SeedCollection()
+            ["Item"] = new Seed()
         });
     }
     async void OnItemDeleted(object sender, EventArgs e)
     {
         var btn = (ImageButton)sender;
-        var item = (SeedCollection)btn.BindingContext;
+        var item = (Seed)btn.BindingContext;
         
         await database.DeleteCollectionAsync(item);
         Items.Remove(item);
@@ -48,14 +48,14 @@ public partial class SeedListPage : ContentPage
 
     private async void  CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection[0] is not SeedCollection item)
+        if (e.CurrentSelection[0] is not Seed item)
             return;
 
         var seeds = await database.GetItemsAsync();
         seeds = seeds.Where(seed => seed.CollectionId == item.ID).ToList();
         foreach (var seed in seeds)
         {
-            item.Seeds.Add(seed);
+            item.Cells.Add(seed);
         }
 
         await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>

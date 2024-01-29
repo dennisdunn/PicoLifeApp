@@ -4,7 +4,7 @@
              x:Class="PicoLife.Views.SeedEditPage"
              Title="{Binding Name}"
              xmlns:models="clr-namespace:PicoLife.Models"
-             x:DataType="models:SeedCollection">
+             x:DataType="models:Seed">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Upload" Clicked="OnUploadClicked">
             <ToolbarItem.IconImageSource>
@@ -31,7 +31,7 @@
             <Entry Text="{Binding Notes}" />
                 <CollectionView
                   VerticalOptions="Fill"
-                  ItemsSource="{Binding Seeds}">
+                  ItemsSource="{Binding Cells}">
                     <CollectionView.Header >
                         <Grid ColumnSpacing="20">
                             <Grid.ColumnDefinitions>
@@ -45,7 +45,7 @@
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:SeedItem">
+                        <DataTemplate x:DataType="models:Cell">
                             <Grid ColumnSpacing="20">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="50" />

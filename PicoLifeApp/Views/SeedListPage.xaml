@@ -13,7 +13,7 @@
                   SelectionMode="Single"
                   SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:SeedCollection">
+                <DataTemplate x:DataType="models:Seed">
                     <Grid ColumnDefinitions="*, Auto"  
                           Padding="0,5,20,5">
                         <Label Text="{Binding Name}" 
@@ -34,6 +34,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
         <Button Text="New" Clicked="OnItemAdded"
-                Margin="0,30,0,0"/>
+                Margin="0,30,0,0"
+                VerticalOptions="End"/>
     </VerticalStackLayout>
 </ContentPage>

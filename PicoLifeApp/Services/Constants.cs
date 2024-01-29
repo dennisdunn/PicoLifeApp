@@ -1,4 +1,4 @@
-﻿namespace PicoLife;
+﻿namespace PicoLife.Services;
 
 public static class Constants
 {
@@ -12,6 +12,6 @@ public static class Constants
         // enable multi-threaded database access
         SQLite.SQLiteOpenFlags.SharedCache;
 
-    public static string DatabasePath => 
+    public static string DatabasePath =>
         Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
 }

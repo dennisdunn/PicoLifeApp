@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace PicoLife.Helpers;
+namespace PicoLife.Models;
 
 public abstract class ObservableBase : INotifyPropertyChanged
 {

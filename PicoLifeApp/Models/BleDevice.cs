@@ -1,5 +1,4 @@
-﻿using PicoLife.Helpers;
-using Plugin.BLE.Abstractions.Contracts;
+﻿using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

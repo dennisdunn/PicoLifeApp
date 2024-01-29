@@ -1,9 +1,5 @@
 using PicoLife.Models;
-using Plugin.BLE;
-using Plugin.BLE.Abstractions.Contracts;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
+using PicoLife.Services;
 
 namespace PicoLife.Views;
 

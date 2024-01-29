@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace PicoLife.Models;
 
-public class SeedCollection
+public class Seed
 
 {
     [PrimaryKey, AutoIncrement]
@@ -14,10 +14,10 @@ public class SeedCollection
     public string Notes { get; set; }
 
     [OneToMany]
-    public ObservableCollection<SeedItem> Seeds { get; set; } = [];
+    public ObservableCollection<Cell> Cells { get; set; } = [];
 
     public override string ToString()
     {
-        return $"[{string.Join(",",Seeds.Select(s=>s.ToString()))}]";
+        return $"[{string.Join(",",Cells.Select(s=>s.ToString()))}]";
     }
 }

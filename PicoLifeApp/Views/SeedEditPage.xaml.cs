@@ -1,19 +1,18 @@
-using PicoLife.Data;
 using PicoLife.Models;
-using System.Collections.ObjectModel;
+using PicoLife.Services;
 
 namespace PicoLife.Views;
 
 [QueryProperty("Item", "Item")]
 public partial class SeedEditPage : ContentPage
 {
-    readonly List<SeedItem> deletedSeeds = [];
+    readonly List<Models.Cell> deletedSeeds = [];
 
     public BleManager BleManager { get; set; }
 
-    public SeedCollection Item
+    public Seed Item
     {
-        get => BindingContext as SeedCollection;
+        get => BindingContext as Seed;
         set => BindingContext = value;
     }
     readonly SeedDatabase database;
@@ -36,7 +35,7 @@ public partial class SeedEditPage : ContentPage
 
         await database.SaveCollectionAsync(Item);
 
-        foreach (var seed in Item.Seeds)
+        foreach (var seed in Item.Cells)
         {
             seed.CollectionId = Item.ID;
             await database.SaveItemAsync(seed);
@@ -60,9 +59,9 @@ public partial class SeedEditPage : ContentPage
     void OnDeleteSeedItemClicked(object sender, EventArgs e)
     {
         var btn = (ImageButton)sender;
-        var item = (SeedItem)btn.BindingContext;
+        var item = (Models.Cell)btn.BindingContext;
 
-        Item.Seeds.Remove(item);
+        Item.Cells.Remove(item);
 
         if (item.ID > 0)
         {
@@ -72,7 +71,7 @@ public partial class SeedEditPage : ContentPage
 
     void OnAddSeedItemClicked(object sender, EventArgs e)
     {
-        Item.Seeds.Add(new SeedItem());
+        Item.Cells.Add(new Models.Cell());
     }
 
     async void OnUploadClicked(object sender, EventArgs e)

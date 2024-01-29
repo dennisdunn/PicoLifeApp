@@ -2,7 +2,7 @@
 using SQLiteNetExtensions;
 using PicoLife.Models;
 
-namespace PicoLife.Data;
+namespace PicoLife.Services;
 
 public partial class SeedDatabase
 {
@@ -18,6 +18,6 @@ public partial class SeedDatabase
             return;
 
         Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-       await Database.CreateTablesAsync<SeedCollection,SeedItem>();
+       await Database.CreateTablesAsync<Seed, Models.Cell>();
     }
 }

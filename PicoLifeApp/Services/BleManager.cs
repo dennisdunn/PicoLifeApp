@@ -1,4 +1,5 @@
 ﻿using PicoLife.Helpers;
+using PicoLife.Models;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
@@ -7,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
-namespace PicoLife.Models;
+namespace PicoLife.Services;
 
 public class BleManager : ObservableBase, IDisposable
 {
