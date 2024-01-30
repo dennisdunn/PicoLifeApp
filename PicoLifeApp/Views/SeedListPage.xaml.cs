@@ -1,18 +1,22 @@
 ﻿using PicoLife.Models;
 using System.Collections.ObjectModel;
 using PicoLife.Services;
+using Cell = PicoLife.Models.Cell;
 
 namespace PicoLife.Views;
 
 public partial class SeedListPage : ContentPage
 {
     readonly SeedDatabase database;
+    private readonly BleManager bluetooth;
+
     public ObservableCollection<Seed> Items { get; set; } = [];
 
-    public SeedListPage(SeedDatabase SeedCollectionDatabase)
-	{
+    public SeedListPage(SeedDatabase SeedCollectionDatabase, BleManager bluetooth)
+    {
         InitializeComponent();
         database = SeedCollectionDatabase;
+        this.bluetooth = bluetooth;
         BindingContext = this;
     }
 
@@ -20,7 +24,7 @@ public partial class SeedListPage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-        var items = await database.GetCollectionsAsync();
+        var items = await database.GetSeedsAsync();
         MainThread.BeginInvokeOnMainThread(() =>
         {
             Items.Clear();
@@ -29,39 +33,44 @@ public partial class SeedListPage : ContentPage
 
         });
     }
-    async void OnItemAdded(object sender, EventArgs e)
+    async void AddSeedClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
         {
             ["Item"] = new Seed()
         });
     }
-    async void OnItemDeleted(object sender, EventArgs e)
+
+    async void EditSeedClicked(object sender, EventArgs e)
     {
         var btn = (ImageButton)sender;
-        var item = (Seed)btn.BindingContext;
-        
-        await database.DeleteCollectionAsync(item);
-        Items.Remove(item);
-       // await Shell.Current.GoToAsync("..");
-    }
-
-    private async void  CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.CurrentSelection[0] is not Seed item)
-            return;
-
-        var seeds = await database.GetItemsAsync();
-        seeds = seeds.Where(seed => seed.CollectionId == item.ID).ToList();
-        foreach (var seed in seeds)
-        {
-            item.Cells.Add(seed);
-        }
-
+        var seed = (Seed)btn.BindingContext;
+        await PopulateCells(seed);
         await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
         {
-            ["Item"] = item
+            ["Item"] = seed
         });
+    }
+
+    private async void SelectSeedClicked(object sender, SelectionChangedEventArgs e)
+    {
+        if (seedList.SelectedItem == null) return;
+        if (!bluetooth.IsConnected)
+        {
+            await DisplayAlert("Not Connected", "Connect to a device.", "OK");
+            seedList.SelectedItem = null;
+            return;
+        }
+        var seed = (Seed)e.CurrentSelection[0];
+        await PopulateCells(seed);
+        await bluetooth.Send(seed.ToString());
+    }
+
+    private async Task<Seed> PopulateCells(Seed seed)
+    {
+        var cells = await database.GetCellsBySeedIdAsync(seed.ID);
+        seed.Cells = new ObservableCollection<Cell>(cells);
+        return seed;
     }
 }
 

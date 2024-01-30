@@ -1,12 +1,16 @@
+using AndroidX.Activity;
 using PicoLife.Models;
 using PicoLife.Services;
+using System.Windows.Input;
+using Cell = PicoLife.Models.Cell;
 
 namespace PicoLife.Views;
 
 [QueryProperty("Item", "Item")]
 public partial class SeedEditPage : ContentPage
 {
-    readonly List<Models.Cell> deletedSeeds = [];
+    readonly List<Cell> removedCells = [];
+    readonly SeedDatabase database;
 
     public BleManager BleManager { get; set; }
 
@@ -15,67 +19,75 @@ public partial class SeedEditPage : ContentPage
         get => BindingContext as Seed;
         set => BindingContext = value;
     }
-    readonly SeedDatabase database;
     public SeedEditPage(SeedDatabase SeedItemDatabase, BleManager ble)
     {
         InitializeComponent();
         database = SeedItemDatabase;
         BleManager = ble;
+
+        backbutton.BindingContext = this;
     }
 
-    async void OnSaveClicked(object sender, EventArgs e)
+    public ICommand SaveSeedCommand => new Command(SaveSeed);
+
+    //protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    //{
+    //    if (string.IsNullOrWhiteSpace(Item.Name))
+    //    {
+    //        DisplayAlert("Name Required", "Please enter a name for the seed.", "OK").Wait();
+    //        return;
+    //    }
+
+    //    IsBusy = true;
+
+    //    database.SaveSeedAsync(Item).Wait();
+
+    //    foreach (var cell in deletedCells)
+    //    {
+    //        database.DeleteCellAsync(cell).Wait();
+    //    }
+
+    //    IsBusy = false;
+
+    //    //Shell.Current.GoToAsync("..").Wait();
+    //    base.OnNavigatedFrom(args);
+    //}
+
+    async void SaveSeed()
     {
         if (string.IsNullOrWhiteSpace(Item.Name))
         {
             await DisplayAlert("Name Required", "Please enter a name for the seed.", "OK");
-            return;
         }
-
-        IsBusy = true;
-
-        await database.SaveCollectionAsync(Item);
-
-        foreach (var seed in Item.Cells)
+        else
         {
-            seed.CollectionId = Item.ID;
-            await database.SaveItemAsync(seed);
+            await database.DeleteCellAsync(removedCells);
+            await database.SaveSeedAsync(Item);
+            await Shell.Current.GoToAsync("..");
         }
-
-        foreach (var seed in deletedSeeds)
-        {
-            await database.DeleteItemAsync(seed);
-        }
-
-        IsBusy = false;
-
-        await Shell.Current.GoToAsync("..");
     }
 
-    async void OnCancelClicked(object sender, EventArgs e)
+    async void DeleteSeedClicked(object sender, EventArgs e)
     {
+        await database.DeleteSeedAsync(Item);
         await Shell.Current.GoToAsync("..");
     }
 
-    void OnDeleteSeedItemClicked(object sender, EventArgs e)
+    void DeleteCellClicked(object sender, EventArgs e)
     {
         var btn = (ImageButton)sender;
-        var item = (Models.Cell)btn.BindingContext;
+        var item = (Cell)btn.BindingContext;
 
         Item.Cells.Remove(item);
 
         if (item.ID > 0)
         {
-            deletedSeeds.Add(item);
+            removedCells.Add(item);
         }
     }
 
-    void OnAddSeedItemClicked(object sender, EventArgs e)
+    void AddCellClicked(object sender, EventArgs e)
     {
-        Item.Cells.Add(new Models.Cell());
-    }
-
-    async void OnUploadClicked(object sender, EventArgs e)
-    {
-        await BleManager.Send(Item.ToString());
+        Item.Cells.Add(new Cell());
     }
 }

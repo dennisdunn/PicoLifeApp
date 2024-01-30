@@ -4,14 +4,14 @@
              xmlns:models="clr-namespace:PicoLife.Models"
              x:Class="PicoLife.Views.SeedListPage"
              Title="Seeds">
-    <VerticalStackLayout Padding="20"
-                             Spacing="10"
-                             VerticalOptions="StartAndExpand">
-        <CollectionView 
-                  VerticalOptions="Fill"
+    <Grid RowDefinitions="*,Auto"
+        Padding="20">
+        <CollectionView Grid.Row="0"
+                        x:Name="seedList"
+                  VerticalOptions="StartAndExpand"
                   ItemsSource="{Binding Items}"
                   SelectionMode="Single"
-                  SelectionChanged="CollectionView_SelectionChanged">
+                  SelectionChanged="SelectSeedClicked">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Seed">
                     <Grid ColumnDefinitions="*, Auto"  
@@ -20,11 +20,11 @@
                                Grid.Column="0"
                                FontAttributes="Bold"
                                VerticalTextAlignment="Center"/>
-                        <ImageButton Clicked="OnItemDeleted" 
+                        <ImageButton Clicked="EditSeedClicked" 
                               Grid.Column="1">
                             <ImageButton.Source>
                                 <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
-                                   Glyph="&#xe15b;" 
+                                   Glyph="&#xe3c9;" 
                                    Color="Black"
                                    Size="Small" />
                             </ImageButton.Source>
@@ -33,8 +33,20 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Button Text="New" Clicked="OnItemAdded"
-                Margin="0,30,0,0"
-                VerticalOptions="End"/>
-    </VerticalStackLayout>
+        <Button
+           Clicked="AddSeedClicked"
+            Grid.Row="1"
+            WidthRequest="50"
+            HeightRequest="50"
+            CornerRadius="50" 
+            VerticalOptions="End"
+            HorizontalOptions="End">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialIcons"         
+                                 Glyph="&#xe145;" 
+                                 Color="White"
+                                 Size="Large"/>
+            </Button.ImageSource>
+        </Button>
+    </Grid>
 </ContentPage>

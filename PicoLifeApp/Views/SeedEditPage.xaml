@@ -4,31 +4,32 @@
              x:Class="PicoLife.Views.SeedEditPage"
              Title="{Binding Name}"
              xmlns:models="clr-namespace:PicoLife.Models"
+             xmlns:views="clr-namespace:PicoLife.Views"
              x:DataType="models:Seed">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Upload" Clicked="OnUploadClicked">
+        <ToolbarItem Text="Save" Clicked="DeleteSeedClicked">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIcons-Regular"
-                                 Glyph="&#xf09b;"
-                                 Size="Large" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-        <ToolbarItem Text="Save" Clicked="OnSaveClicked" >
-            <ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="MaterialIcons-Regular"
-                                 Glyph="&#xe161;"
-                                 Size="Large" />
+                                 Glyph="&#xe872;" 
+                                 Size="Medium"/>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    <ScrollView>
-        <VerticalStackLayout Padding="20"
-                             Spacing="10"
-                             VerticalOptions="StartAndExpand">
-            <Label Text="Name" />
-            <Entry Text="{Binding Name}" />
-            <Label Text="Notes" />
-            <Entry Text="{Binding Notes}" />
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior x:Name="backbutton" 
+                            x:DataType="views:SeedEditPage"
+                            Command="{Binding SaveSeedCommand}"/>
+    </Shell.BackButtonBehavior>
+    <Grid RowDefinitions="*,Auto"
+           Padding="20">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout
+                Spacing="10"
+                VerticalOptions="StartAndExpand">
+                <Label Text="Name" />
+                <Entry Text="{Binding Name}" />
+                <Label Text="Notes" />
+                <Entry Text="{Binding Notes}" />
                 <CollectionView
                   VerticalOptions="Fill"
                   ItemsSource="{Binding Cells}">
@@ -53,10 +54,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                            <Entry Text="{Binding X}" Grid.Column="0"  HorizontalTextAlignment="Center" />
-                            <Entry Text="{Binding Y}" Grid.Column="1" HorizontalTextAlignment="Center"/>
+                                <Entry Text="{Binding X}" Grid.Column="0"  HorizontalTextAlignment="Center" />
+                                <Entry Text="{Binding Y}" Grid.Column="1" HorizontalTextAlignment="Center"/>
                                 <Entry Text="{Binding Color}" Grid.Column="2"/>
-                                <ImageButton Clicked="OnDeleteSeedItemClicked" 
+                                <ImageButton Clicked="DeleteCellClicked" 
                                              Grid.Column="3"
                                              Padding="5">
                                     <ImageButton.Source>
@@ -70,15 +71,22 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            <ImageButton Clicked="OnAddSeedItemClicked"
-                         HorizontalOptions="End">
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="MaterialIcons-Regular"
-                                     Glyph="&#xe145;"
-                                     Color="Black"
-                                     Size="Large"/>
-                </ImageButton.Source>
-            </ImageButton>
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button
+           Clicked="AddCellClicked"
+            Grid.Row="1"
+            WidthRequest="50"
+            HeightRequest="50"
+            CornerRadius="50" 
+            VerticalOptions="End"
+            HorizontalOptions="End">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialIcons"         
+                                 Glyph="&#xe145;" 
+                                 Color="White"
+                                 Size="Large"/>
+            </Button.ImageSource>
+        </Button>
+    </Grid>
 </ContentPage>

@@ -3,7 +3,7 @@ using SQLiteNetExtensions.Attributes;
 
 namespace PicoLife.Models;
 
-public class Cell
+public class Cell : IKeyed
 
 {
     [PrimaryKey, AutoIncrement]
@@ -13,7 +13,7 @@ public class Cell
     public string Color { get; set; }
 
     [ForeignKey(typeof(Seed))]
-    public int CollectionId { get; set; }
+    public int SeedId { get; set; }
 
     public override string ToString()
     {

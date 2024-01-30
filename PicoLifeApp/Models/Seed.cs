@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace PicoLife.Models;
 
-public class Seed
+public class Seed : IKeyed
 
 {
     [PrimaryKey, AutoIncrement]
@@ -18,6 +18,6 @@ public class Seed
 
     public override string ToString()
     {
-        return $"[{string.Join(",",Cells.Select(s=>s.ToString()))}]";
+        return $"[{string.Join(",", Cells.Select(s => s.ToString()))}]";
     }
 }

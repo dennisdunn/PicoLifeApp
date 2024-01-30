@@ -16,6 +16,9 @@ public class BleManager : ObservableBase, IDisposable
 
     public ObservableCollection<BleDevice> Devices { get; set; } = [];
 
+    public BleDevice ConnectedDevice { get => Devices.FirstOrDefault(d => d.IsConnected); }
+    public bool IsConnected => ConnectedDevice!=null;
+
     public static IAdapter Adapter { get => CrossBluetoothLE.Current.Adapter; }
 
     public static BluetoothState Status { get => CrossBluetoothLE.Current.State; }
@@ -38,14 +41,24 @@ public class BleManager : ObservableBase, IDisposable
     {
         var id = e.Device.Id;
         var device = Devices.FirstOrDefault(d => d.Id == id);
-        if (device != null) device.IsConnected = true;
+        if (device != null)
+        {
+            device.IsConnected = true;
+            OnPropertyChanged(nameof(ConnectedDevice));
+            OnPropertyChanged(nameof(IsConnected));
+        }
     }
 
     private void OnDeviceDisconnected(object sender, DeviceEventArgs e)
     {
         var id = e.Device.Id;
         var device = Devices.FirstOrDefault(d => d.Id == id);
-        if (device != null) device.IsConnected = false;
+        if (device != null)
+        {
+            device.IsConnected = false;
+            OnPropertyChanged(nameof(ConnectedDevice));
+            OnPropertyChanged(nameof(IsConnected));
+        }
     }
 
     private void OnDeviceConnectionError(object sender, DeviceErrorEventArgs e)
@@ -151,9 +164,6 @@ public class BleManager : ObservableBase, IDisposable
     #region IDisposable
 
     private bool disposedValue;
-    private bool _isError;
-    private string _message;
-    private BleDevice _device;
 
     protected virtual void Dispose(bool disposing)
     {
@@ -194,7 +204,7 @@ public class BleManager : ObservableBase, IDisposable
 
 public static class BLE
 {
-    public static Guid UART_SERVICE = Guid.Parse("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
-    public static Guid UART_RX_CHARACTERISTIC = Guid.Parse("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
-    public static Guid UART_TX_CHARACTERISTIC = Guid.Parse("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
+    public readonly static Guid UART_SERVICE = Guid.Parse("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
+    public readonly static Guid UART_RX_CHARACTERISTIC = Guid.Parse("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
+    public readonly static Guid UART_TX_CHARACTERISTIC = Guid.Parse("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
 }

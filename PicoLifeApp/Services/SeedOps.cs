@@ -1,45 +1,51 @@
 ﻿using SQLite;
 using SQLiteNetExtensions;
 using PicoLife.Models;
+using System.Collections.ObjectModel;
 
 namespace PicoLife.Services;
 
 public partial class SeedDatabase
 {
-    public async Task<List<Seed>> GetCollectionsAsync()
+    public async Task<List<Seed>> GetSeedsAsync()
     {
         await Init();
         return await Database.Table<Seed>().ToListAsync();
     }
 
-    public async Task<Seed> GetCollectionAsync(int id)
+    public async Task<Seed> GetSeedByIdAsync(int id)
     {
         await Init();
-        return await Database.Table<Seed>().Where(i => i.ID == id).FirstOrDefaultAsync();
+
+        var seed = await Database.Table<Seed>().Where(i => i.ID == id).FirstOrDefaultAsync();
+        var cells = await GetCellsBySeedIdAsync(seed.ID);
+        seed.Cells = new ObservableCollection<Models.Cell>(cells);
+        return seed;
     }
 
-    public async Task<int> SaveCollectionAsync(Seed Collection)
+    public async Task<int> SaveSeedAsync(Seed seed)
     {
         await Init();
-        if (Collection.ID != 0)
+        await Upsert(seed);
+
+        foreach (var cell in seed.Cells)
         {
-            return await Database.UpdateAsync(Collection);
+            cell.SeedId=seed.ID;
+            await SaveCellAsync(cell);
         }
-        else
-        {
-            return await Database.InsertAsync(Collection);
-        }
+
+        return 0;
     }
 
-    public async Task<int> DeleteCollectionAsync(Seed Collection)
+    public async Task<int> DeleteSeedAsync(Seed seed)
     {
         await Init();
 
-        foreach (var item in Collection.Cells)
+        foreach (var item in seed.Cells)
         {
-            await DeleteItemAsync(item);
+            await DeleteCellAsync(item);
         }
 
-        return await Database.DeleteAsync(Collection);
+        return await Database.DeleteAsync(seed);
     }
 }
