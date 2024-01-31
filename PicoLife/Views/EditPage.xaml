@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PicoLife.Views.EditPage"
+             x:DataType="viewmodels:EditPageViewModel"
+             xmlns:models="clr-namespace:PicoLife.Models"
+             xmlns:viewmodels="clr-namespace:PicoLife.ViewModels"
+             Title="{Binding Item.Name}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding DeleteSeedCommand}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialIcons-Regular"
+                                 Glyph="&#xe872;" 
+                                 Size="Medium"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <!--<Shell.BackButtonBehavior>
+        <BackButtonBehavior x:Name="backbutton" 
+                            x:DataType="views:SeedEditPage"
+                            Command="{Binding SaveSeedCommand}"/>
+    </Shell.BackButtonBehavior>-->
+    <Grid RowDefinitions="*,Auto"
+           Padding="20">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout
+                Spacing="10"
+                VerticalOptions="StartAndExpand">
+                <Label Text="Name" />
+                <Entry Text="{Binding Item.Name}" />
+                <Label Text="Notes" />
+                <Entry Text="{Binding  Item.Notes}" />
+                <CollectionView
+                  VerticalOptions="Fill"
+                  ItemsSource="{Binding  Item.Cells}">
+                    <CollectionView.Header >
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="X" Grid.Column="0" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Y" Grid.Column="1" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Color" Grid.Column="2" FontAttributes="Bold"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Cell">
+                            <Grid ColumnSpacing="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Entry Text="{Binding X}" Grid.Column="0"  HorizontalTextAlignment="Center" />
+                                <Entry Text="{Binding Y}" Grid.Column="1" HorizontalTextAlignment="Center"/>
+                                <Button Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:EditPageViewModel}},Path=RemoveCellCommand}"
+                                        CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type models:Cell}}}"
+                                        Grid.Column="3"
+                                        BackgroundColor="Transparent">
+                                    <Button.ImageSource>
+                                        <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
+                                          Glyph="&#xe15b;" 
+                                          Color="Black"
+                                           Size="Small"/>
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button
+            Text="Save"
+            Command="{Binding SaveSeedCommand}"
+            Grid.Row="1"
+            HorizontalOptions="Start"></Button>
+        <Button
+            Command="{Binding AddCellCommand}"
+            Grid.Row="1"
+            WidthRequest="50"
+            HeightRequest="50"
+            CornerRadius="50" 
+            VerticalOptions="End"
+            HorizontalOptions="End">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialIcons"         
+                                 Glyph="&#xe145;" 
+                                 Color="White"
+                                 Size="Large"/>
+            </Button.ImageSource>
+        </Button>
+    </Grid>
+</ContentPage>

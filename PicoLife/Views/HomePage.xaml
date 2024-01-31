@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PicoLife.Views.HomePage"
+             x:DataType="viewmodels:HomePageViewModel"
+             xmlns:models="clr-namespace:PicoLife.Models"
+             xmlns:viewmodels="clr-namespace:PicoLife.ViewModels"
+             Title="Seeds">
+    <Grid RowDefinitions="*,Auto"
+        Padding="20">
+        <ScrollView Grid.Row="0">
+            <CollectionView 
+                ItemsSource="{Binding Seeds}"
+                SelectionChangedCommand="{Binding UploadCommand}"
+                SelectionMode="Single"
+                  VerticalOptions="StartAndExpand"
+                SelectedItem="{Binding CurrentSeed}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Seed">
+                        <Grid ColumnDefinitions="*,Auto"
+                              Padding="10,0">
+                            <Label  Grid.Column="0" 
+                                    Text="{Binding Name}" 
+                               FontAttributes="Bold"
+                               VerticalTextAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomePageViewModel}}, Path=EditCommand}"
+                                CommandParameter="{Binding Source={RelativeSource AncestorType={x:Type models:Seed}}}"
+                                BackgroundColor="Transparent">
+                                <Button.ImageSource>
+                                    <FontImageSource FontFamily="MaterialIcons"     
+                                                     Glyph="&#xe3c9;" 
+                                                     Color="Black"
+                                                     Size="Medium"/>
+                                </Button.ImageSource>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+        <Button
+            Command="{Binding EditCommand}"
+            Grid.Row="1"
+            WidthRequest="50"
+            HeightRequest="50"
+            CornerRadius="25" 
+            VerticalOptions="Center"
+            HorizontalOptions="End">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialIcons"         
+                                 Glyph="&#xe145;" 
+                                 Color="White"
+                                 Size="Large"/>
+            </Button.ImageSource>
+        </Button>
+    </Grid>
+</ContentPage>
