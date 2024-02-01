@@ -19,6 +19,10 @@ public partial class SeedDatabase
 
         Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         await Database.CreateTablesAsync<Seed, Models.Cell>();
+
+        // Populate the db with example data.
+        await Database.InsertAllAsync(ExampleData.Seeds);
+        await Database.InsertAllAsync(ExampleData.Cells);
     }
 
     async Task<int> Upsert(IKeyed item)
