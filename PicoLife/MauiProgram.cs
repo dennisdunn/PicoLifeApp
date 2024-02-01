@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using PicoLife.Services;
-using PicoLife.Services.Bluetooth;
-using PicoLife.Services.Database;
 using PicoLife.ViewModels;
 using PicoLife.Views;
+using CommunityToolkit.Maui;
 
 namespace PicoLife
 {
@@ -14,6 +13,7 @@ namespace PicoLife
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -25,18 +25,18 @@ namespace PicoLife
     		builder.Logging.AddDebug();
 #endif
 
-            builder.Services.AddSingleton<BluetoothManager>();
-            builder.Services.AddSingleton<DatabaseManager>();
+            builder.Services.AddSingleton<BluetoothService>();
+            builder.Services.AddSingleton<DataService>();
             builder.Services.AddSingleton<AlertService>();
 
             builder.Services.AddTransient<HomePage>();
-            builder.Services.AddTransient<HomePageViewModel>();
+            builder.Services.AddSingleton<HomePageViewModel>();
 
             builder.Services.AddTransient<EditPage>();
             builder.Services.AddTransient<EditPageViewModel>();
 
             builder.Services.AddTransient<DevicesPage>();
-            builder.Services.AddTransient<DevicePageViewModel>();
+            builder.Services.AddSingleton<DevicePageViewModel>();
 
             return builder.Build();
         }

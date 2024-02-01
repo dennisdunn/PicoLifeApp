@@ -2,17 +2,15 @@
 using CommunityToolkit.Mvvm.Input;
 using PicoLife.Models;
 using PicoLife.Services;
-using PicoLife.Services.Bluetooth;
-using PicoLife.Services.Database;
 using PicoLife.Views;
 using System.Collections.ObjectModel;
 
 namespace PicoLife.ViewModels;
 
-public partial class HomePageViewModel(DatabaseManager database, BluetoothManager bluetooth, AlertService alert) : ObservableObject
+public partial class HomePageViewModel(DataService database, BluetoothService bluetooth, AlertService alert) : ObservableObject
 {
-    private readonly DatabaseManager database = database;
-    private readonly BluetoothManager bluetooth = bluetooth;
+    private readonly DataService database = database;
+    private readonly BluetoothService bluetooth = bluetooth;
     private readonly AlertService alert = alert;
 
     public ObservableCollection<Seed> Seeds { get; private set; } = [];
@@ -39,12 +37,20 @@ public partial class HomePageViewModel(DatabaseManager database, BluetoothManage
     {
         if (bluetooth.IsConnected && CurrentSeed != null)
         {
-            await bluetooth.Send(CurrentSeed.ToString());
+            try
+            {
+                var data = await database.GetSeedById(CurrentSeed.Id);
+                await bluetooth.Send(data.ToString());
+            }
+            catch (Exception ex)
+            {
+                await alert.OK("Upload Error", ex.Message);
+                CurrentSeed = null;
+            }
         }
         else
         {
             await alert.OK("Not Connected", "Connect to a device.");
-            // TODO: un-select the current item
             CurrentSeed = null;
         }
     }

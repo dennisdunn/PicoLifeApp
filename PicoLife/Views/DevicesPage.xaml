@@ -1,12 +1,61 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:plugin="clr-namespace:Plugin.BLE.Abstractions.Contracts;assembly=Plugin.BLE"
              x:Class="PicoLife.Views.DevicesPage"
-             Title="Devices">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:DevicePageViewModel"
+             xmlns:local="clr-namespace:PicoLife"
+             xmlns:viewmodels="clr-namespace:PicoLife.ViewModels"
+             xmlns:services="clr-namespace:PicoLife.Services"
+             Title="Devices"
+             IsBusy="{Binding BT.IsScanning}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter  x:Key="IsNotConvertor" />
+            <toolkit:IsEqualConverter  x:Key="IsConnectedConvertor" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="*,Auto" 
+          Padding="20">
+        <ScrollView Grid.Row="0">
+            <CollectionView               
+            ItemsSource="{Binding BT.Devices}"
+                SelectionMode="Single" 
+                SelectedItem="{Binding SelectedDevice}"
+                SelectionChangedCommand="{Binding ConnectCommand}"
+                SelectionChangedCommandParameter="{Binding Source={RelativeSource Self},Path=SelectedItem}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="plugin:IDevice">
+                        <Grid ColumnDefinitions="*,Auto"
+                            Padding="10">
+                            <Label  Grid.Column="0" 
+                            Text="{Binding Name}" 
+                            FontAttributes="Bold"
+                            VerticalTextAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DevicePageViewModel}}, Path=DisconnectCommand}"
+                                    BackgroundColor="Transparent"
+                                    IsVisible="{Binding Id,Converter={StaticResource IsConnectedConvertor},ConverterParameter={Binding Source={RelativeSource AncestorType={x:Type services:BluetoothService}},Path=ConnectedDevice.Id}}">
+                                <Button.ImageSource>
+                                    <FontImageSource FontFamily="MaterialIcons"     
+                                    Glyph="&#xe16f;" 
+                                    Color="Black"
+                                    Size="Medium"/>
+                                </Button.ImageSource>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+        <Button Text="Scan"
+                Grid.Row="1"
+                Command="{Binding ScanCommand}"
+                IsVisible="{Binding BT.IsScanning,Converter={StaticResource IsNotConvertor}}"/>
+        <Button Text="Cancel"
+                Grid.Row="1"
+                Command="{Binding CancelScanCommand}"
+                IsVisible="{Binding BT.IsScanning}"/>
+    </Grid>
 </ContentPage>

@@ -15,11 +15,6 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    <!--<Shell.BackButtonBehavior>
-        <BackButtonBehavior x:Name="backbutton" 
-                            x:DataType="views:SeedEditPage"
-                            Command="{Binding SaveSeedCommand}"/>
-    </Shell.BackButtonBehavior>-->
     <Grid RowDefinitions="*,Auto"
            Padding="20">
         <ScrollView Grid.Row="0">

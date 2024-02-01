@@ -7,41 +7,45 @@ using System.Collections.ObjectModel;
 using System.Text;
 using IAdapter = Plugin.BLE.Abstractions.Contracts.IAdapter;
 
-namespace PicoLife.Services.Bluetooth;
+namespace PicoLife.Services;
 
-public partial class BluetoothManager : ObservableObject, IDisposable
+public partial class BluetoothService : ObservableObject, IDisposable
 {
     private CancellationTokenSource? _cancellationTokenSource;
-    private static IDevice? _connectedDevice;
 
     public static IAdapter Adapter { get => CrossBluetoothLE.Current.Adapter; }
     public static BluetoothState Status { get => CrossBluetoothLE.Current.State; }
     public ObservableCollection<IDevice> Devices { get; } = [];
-    public static bool IsScanning { get => Adapter.IsScanning; }
     public static bool IsOn { get => Status == BluetoothState.On; }
     public bool IsConnected { get => ConnectedDevice != null; }
 
     [ObservableProperty]
+    private bool isScanning;
+
+    [ObservableProperty]
     private IDevice? connectedDevice;
 
-    public BluetoothManager()
+    public BluetoothService()
     {
         Adapter.DeviceDiscovered += OnDeviceDiscovered;
         Adapter.DeviceAdvertised += OnDeviceDiscovered;
         Adapter.ScanTimeoutElapsed += OnScanTimeout;
         Adapter.ScanMode = ScanMode.LowLatency;
 
-        Adapter.DeviceConnectionError += OnDeviceConnectionError;
         Adapter.DeviceConnected += OnDeviceConnected;
         Adapter.DeviceDisconnected += OnDeviceDisconnected;
     }
 
-    private void OnDeviceConnected(object? sender, DeviceEventArgs e) => ConnectedDevice = e.Device;
-
-    private void OnDeviceDisconnected(object? sender, DeviceEventArgs e) => ConnectedDevice = null;
-
-    private void OnDeviceConnectionError(object? sender, DeviceErrorEventArgs e)
+    private void OnDeviceConnected(object? sender, DeviceEventArgs e)
     {
+        ConnectedDevice = e.Device;
+        OnPropertyChanged(nameof(IsConnected));
+    }
+
+    private void OnDeviceDisconnected(object? sender, DeviceEventArgs e)
+    {
+        ConnectedDevice = null;
+        OnPropertyChanged(nameof(IsConnected));
     }
 
     private void OnDeviceDiscovered(object? sender, DeviceEventArgs e)
@@ -58,6 +62,7 @@ public partial class BluetoothManager : ObservableObject, IDisposable
 
         if (await CheckAndRequstBleAccess())
         {
+            IsScanning = true;
             await DisconnectCurrentAsync();
 
             Devices.Clear();
@@ -67,6 +72,7 @@ public partial class BluetoothManager : ObservableObject, IDisposable
             _cancellationTokenSource = new CancellationTokenSource();
 
             await Adapter.StartScanningForDevicesAsync(_cancellationTokenSource.Token);
+            IsScanning = false;
         };
     }
 
@@ -76,6 +82,7 @@ public partial class BluetoothManager : ObservableObject, IDisposable
         {
             _cancellationTokenSource.Cancel();
             await Task.Run(() => CleanupScan());
+            IsScanning = false;
         }
     }
 
@@ -124,7 +131,7 @@ public partial class BluetoothManager : ObservableObject, IDisposable
 
     public static async Task<IService> GetUartService(IDevice device)
     {
-        return await device.GetServiceAsync(BluetoothUART.UART_SERVICE);
+        return await device.GetServiceAsync(Constants.UART_SERVICE);
     }
 
     public static async Task<ICharacteristic> GetUartCharacteristic(IService service, Guid id)
@@ -136,8 +143,8 @@ public partial class BluetoothManager : ObservableObject, IDisposable
     {
         if (ConnectedDevice != null)
         {
-            var service = await BluetoothManager.GetUartService(ConnectedDevice);
-            var rx = await BluetoothManager.GetUartCharacteristic(service, BluetoothUART.UART_RX_CHARACTERISTIC);
+            var service = await GetUartService(ConnectedDevice);
+            var rx = await GetUartCharacteristic(service, Constants.UART_RX_CHARACTERISTIC);
             rx.WriteType = Plugin.BLE.Abstractions.CharacteristicWriteType.WithResponse;
             await rx.WriteAsync(Encoding.ASCII.GetBytes(data));
         }
@@ -157,7 +164,6 @@ public partial class BluetoothManager : ObservableObject, IDisposable
                 Adapter.DeviceAdvertised -= OnDeviceDiscovered;
                 Adapter.ScanTimeoutElapsed -= OnScanTimeout;
 
-                Adapter.DeviceConnectionError -= OnDeviceConnectionError;
                 Adapter.DeviceConnected -= OnDeviceConnected;
                 Adapter.DeviceDisconnected -= OnDeviceDisconnected;
             }
@@ -184,7 +190,7 @@ public partial class BluetoothManager : ObservableObject, IDisposable
     #endregion
 }
 
-public static class BluetoothUART
+public static partial class Constants
 {
     public static readonly Guid UART_SERVICE = Guid.Parse("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
     public static readonly Guid UART_RX_CHARACTERISTIC = Guid.Parse("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");

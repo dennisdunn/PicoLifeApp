@@ -2,15 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using PicoLife.Models;
 using PicoLife.Services;
-using PicoLife.Services.Database;
 using Cell = PicoLife.Models.Cell;
 
 namespace PicoLife.ViewModels;
 
 [QueryProperty("Item", "Item")]
-public partial class EditPageViewModel(DatabaseManager database, AlertService alert) : ObservableObject
+public partial class EditPageViewModel(DataService database, AlertService alert) : ObservableObject
 {
-    private readonly DatabaseManager database = database;
+    private readonly DataService database = database;
     private readonly AlertService alert = alert;
     [ObservableProperty]
     private Seed? item;

@@ -1,12 +1,11 @@
 ﻿using PicoLife.Models;
-using Cell = PicoLife.Models.Cell;
 using SQLite;
-using Java.Nio.Channels;
 using System.Collections.ObjectModel;
+using Cell = PicoLife.Models.Cell;
 
-namespace PicoLife.Services.Database;
+namespace PicoLife.Services;
 
-public static class Constants
+public static partial class Constants
 {
     public const string DatabaseFilename = "PicoLife.db3";
 
@@ -22,7 +21,7 @@ public static class Constants
         Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
 }
 
-public partial class DatabaseManager
+public partial class DataService
 {
     private SQLiteAsyncConnection _dbConn;
 
