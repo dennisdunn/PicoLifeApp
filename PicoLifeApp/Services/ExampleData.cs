@@ -7,8 +7,8 @@ public class ExampleData
 {
     public static readonly IEnumerable<Cell> Cells = [
         new Cell { SeedId = 1, ID = 1, X = 7, Y = 2 },
-        new Cell { SeedId = 1, ID = 2, X = 7, Y = 2 },
-        new Cell { SeedId = 1, ID = 3, X = 7, Y = 2 },
+        new Cell { SeedId = 1, ID = 2, X = 7, Y = 3 },
+        new Cell { SeedId = 1, ID = 3, X = 7, Y = 4 },
         new Cell { SeedId = 2, ID = 4, X = 7, Y = 2 },
         new Cell { SeedId = 2, ID = 5, X = 7, Y = 3 },
         new Cell { SeedId = 2, ID = 6, X = 8, Y = 2 },
