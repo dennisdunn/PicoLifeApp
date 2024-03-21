@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ansodesigns.picolife" android:versionCode="1" android:versionName="1.0.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.github.dennisdunn.picolife" android:versionCode="1" android:versionName="1.0.0">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="Pico Life"></application>
 	<uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 	<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
