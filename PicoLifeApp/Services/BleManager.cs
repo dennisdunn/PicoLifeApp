@@ -157,7 +157,7 @@ public class BleManager : ObservableBase, IDisposable
             var service = await GetUartService(device.Device);
             var rx = await GetUartCharacteristic(service, BLE.UART_RX_CHARACTERISTIC);
             rx.WriteType = Plugin.BLE.Abstractions.CharacteristicWriteType.WithResponse;
-            await rx.WriteAsync(Encoding.ASCII.GetBytes(data));
+            await rx.WriteAsync(Encoding.UTF8.GetBytes(data));
         }
     }
 
