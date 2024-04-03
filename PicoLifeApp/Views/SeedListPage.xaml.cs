@@ -24,6 +24,9 @@ public partial class SeedListPage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
+
+       await BleManager.CheckAndRequstBleAccess();
+
         var items = await database.GetSeedsAsync();
         MainThread.BeginInvokeOnMainThread(() =>
         {

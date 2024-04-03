@@ -26,7 +26,7 @@
                                 <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
                                    Glyph="&#xe3c9;" 
                                    Color="Black"
-                                   Size="Small" />
+                                   Size="Large" />
                             </ImageButton.Source>
                         </ImageButton>
                     </Grid>
