@@ -37,16 +37,17 @@
                            Padding="0,5"
                            FontAttributes="Bold"
                            VerticalTextAlignment="Center"/>
-                        <ImageButton Grid.Column="1"
+                        <Button Grid.Column="1"
                                 Clicked="OnDisconnectClicked"
-                                IsVisible="{Binding IsConnected}">
-                            <ImageButton.Source>
+                                IsVisible="{Binding IsConnected}"
+                                BackgroundColor="{StaticResource Primary}">
+                            <Button.ImageSource>
                                 <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
                                    Glyph="&#xe5cd;" 
-                                   Color="Black"
-                                   Size="Small"/>
-                            </ImageButton.Source>
-                        </ImageButton>
+                                   Color="White"
+                                   Size="Medium"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

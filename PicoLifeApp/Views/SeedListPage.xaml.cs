@@ -24,6 +24,9 @@ public partial class SeedListPage : ContentPage
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
+
+        await BleManager.CheckAndRequstBleAccess();
+
         var items = await database.GetSeedsAsync();
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -43,7 +46,7 @@ public partial class SeedListPage : ContentPage
 
     async void EditSeedClicked(object sender, EventArgs e)
     {
-        var btn = (ImageButton)sender;
+        var btn = (Button)sender;
         var seed = (Seed)btn.BindingContext;
         await PopulateCells(seed);
         await Shell.Current.GoToAsync(nameof(SeedEditPage), true, new Dictionary<string, object>
@@ -64,6 +67,7 @@ public partial class SeedListPage : ContentPage
         var seed = (Seed)e.CurrentSelection[0];
         await PopulateCells(seed);
         await bluetooth.Send(seed.ToString());
+        seedList.SelectedItem = null;
     }
 
     private async Task<Seed> PopulateCells(Seed seed)

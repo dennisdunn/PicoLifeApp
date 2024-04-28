@@ -20,15 +20,16 @@
                                Grid.Column="0"
                                FontAttributes="Bold"
                                VerticalTextAlignment="Center"/>
-                        <ImageButton Clicked="EditSeedClicked" 
-                              Grid.Column="1">
-                            <ImageButton.Source>
+                        <Button Clicked="EditSeedClicked" 
+                                Grid.Column="1"
+                                BackgroundColor="{StaticResource Primary}">
+                            <Button.ImageSource>
                                 <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
                                    Glyph="&#xe3c9;" 
-                                   Color="Black"
-                                   Size="Small" />
-                            </ImageButton.Source>
-                        </ImageButton>
+                                   Color="White"
+                                   Size="Medium" />
+                            </Button.ImageSource>
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
