@@ -38,13 +38,13 @@
                            FontAttributes="Bold"
                            VerticalTextAlignment="Center"/>
                         <ImageButton Grid.Column="1"
-                                     Clicked="OnDisconnectClicked"
-                               IsVisible="{Binding IsConnected}">
+                                Clicked="OnDisconnectClicked"
+                                IsVisible="{Binding IsConnected}">
                             <ImageButton.Source>
                                 <FontImageSource FontFamily="MaterialIcons-Regular"                                                         
-                                   Glyph="&#xe5ca;" 
+                                   Glyph="&#xe5cd;" 
                                    Color="Black"
-                                   Size="Large"/>
+                                   Size="Small"/>
                             </ImageButton.Source>
                         </ImageButton>
                     </Grid>
